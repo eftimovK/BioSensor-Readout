@@ -1,0 +1,25 @@
+var struct_a_d_i___i2_c___type_def =
+[
+    [ "I2CADR1", "struct_a_d_i___i2_c___type_def.html#aee71d6fab67d90406e30c41ada36d5fe", null ],
+    [ "I2CADR2", "struct_a_d_i___i2_c___type_def.html#acffd5c7ad0df792795854aec8102b314", null ],
+    [ "I2CALT", "struct_a_d_i___i2_c___type_def.html#a139fe0ec538c4c808036cbc0696b4745", null ],
+    [ "I2CBYT", "struct_a_d_i___i2_c___type_def.html#a6ee65ff1bae733fb2306d9e3856d671f", null ],
+    [ "I2CDIV", "struct_a_d_i___i2_c___type_def.html#a05731e2dfca65046fd23c10c643ecedc", null ],
+    [ "I2CFSTA", "struct_a_d_i___i2_c___type_def.html#a2551e9fb4fb0a091a3c7f17f913789f5", null ],
+    [ "I2CID0", "struct_a_d_i___i2_c___type_def.html#ad8e88447c2a180c6aeff83d3f57dc923", null ],
+    [ "I2CID1", "struct_a_d_i___i2_c___type_def.html#ac90decdfb4a5f798b1c28af0844fe002", null ],
+    [ "I2CID2", "struct_a_d_i___i2_c___type_def.html#a5b74c49d1f4615d63da8cf66fc5f4a42", null ],
+    [ "I2CID3", "struct_a_d_i___i2_c___type_def.html#a72438a4463bb8611b331ec2ee3a98243", null ],
+    [ "I2CMCON", "struct_a_d_i___i2_c___type_def.html#abc5d2b54baead28adba1cb61bb305211", null ],
+    [ "I2CMCRXCNT", "struct_a_d_i___i2_c___type_def.html#afe1ed797a8118801ab5157019c8e2760", null ],
+    [ "I2CMRX", "struct_a_d_i___i2_c___type_def.html#a8eca8d0e017ba4dacd7c75012cd6a61a", null ],
+    [ "I2CMRXCNT", "struct_a_d_i___i2_c___type_def.html#a94cdae58b22f663784d08dc7844ff543", null ],
+    [ "I2CMSTA", "struct_a_d_i___i2_c___type_def.html#a63fcd417cc378e3ff3d03f08bd17adae", null ],
+    [ "I2CMTX", "struct_a_d_i___i2_c___type_def.html#af8fecc87cae412757b9be86b17a53169", null ],
+    [ "I2CSCON", "struct_a_d_i___i2_c___type_def.html#a40a5b3e9ddfc1f85e94a68941bc1f95a", null ],
+    [ "I2CSHCON", "struct_a_d_i___i2_c___type_def.html#af0a1dbd5db5211b017c1fa9946616fb1", null ],
+    [ "I2CSRX", "struct_a_d_i___i2_c___type_def.html#a2b44718c9cf049b3e6500f58a46ec434", null ],
+    [ "I2CSSTA", "struct_a_d_i___i2_c___type_def.html#ac312e4d611c5080bd03b3140f4daeff3", null ],
+    [ "I2CSTX", "struct_a_d_i___i2_c___type_def.html#a0de50db2189dd5f05576f580e1ae67d9", null ],
+    [ "I2CTCTL", "struct_a_d_i___i2_c___type_def.html#a673e2077ecb936ff864db45592810621", null ]
+];

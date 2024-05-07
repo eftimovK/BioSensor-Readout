@@ -1,0 +1,76 @@
+/*
+*********************************************************************************************************
+*                                       EXAMPLE CODE
+*
+*               This file is provided as an example on how to use Micrium products.
+*
+*               Please feel free to use any application code labeled as 'EXAMPLE CODE' in
+*               your application products.  Example code may be used as is, in whole or in
+*               part, or may be used as a reference only. This file can be modified as
+*               required to meet the end-product requirements.
+*
+*               Please help us continue to provide the Embedded community with the finest
+*               software available.  Your honesty is greatly appreciated.
+*
+*               You can contact us at www.micrium.com.
+*
+*               Portions Copyright (c) 2014 Analog Devices, Inc.
+*********************************************************************************************************
+*/
+
+/*
+*********************************************************************************************************
+*
+*                                    USB DEVICE CONFIGURATION FILE
+*
+*
+* File           : usbd_dev_cfg.c
+* Version        : V4.04.01
+* Programmer(s)  : FT
+*                  FGK
+*********************************************************************************************************
+*/
+
+#include  <usbd_core.h>
+#include  <usbd_dev_cfg.h>
+#include  <usbd_bsp_dev.h>
+
+#define _MSC_
+
+/*
+*********************************************************************************************************
+*                                      USB DEVICE CONFIGURATION
+*********************************************************************************************************
+*/
+
+USBD_DEV_CFG  USBD_DevCfg_ADI = {
+    0x064B,                                                     /* Vendor  ID.                                          */
+    0x7824,                                                     /* Product ID.                                          */
+    0x0200,                                                     /* Device release number.                               */
+   "Analog Devices, Inc",                                       /* Manufacturer  string.                                */
+   "USB Virtual COM Device",                                    /* Product       string.                                */
+   "ABCD1234",                                                  /* Serial number string.                                */
+    USBD_LANG_ID_ENGLISH_US                                     /* String language ID.                                  */
+};
+
+/*
+*********************************************************************************************************
+*                               ADI USB DEVICE CONTROLLER CONFIGURATION
+*
+*           (2) The EP information table is define in the USB device controller driver Board support
+*               package BSP folder.
+*********************************************************************************************************
+*/
+
+const  USBD_DRV_CFG  USBD_DrvCfg_ADI =  {
+    0,                                                 			/* Base addr   of device controller hw registers.       */
+    0x00000000,                                                 /* Base addr   of device controller dedicated mem.      */
+    0u,                                                 /* Size        of device controller dedicated mem.      */
+
+     USBD_DEV_SPD_FULL,                                         /* Speed       of device controller.                    */
+
+     USBD_DrvEP_InfoTbl_MUSBMHDRC                                 /* EP Info tbl of device controller.                    */
+};
+
+
+

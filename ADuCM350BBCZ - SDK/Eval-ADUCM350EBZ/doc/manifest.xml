@@ -1,0 +1,672 @@
+<!-- Manifest for ADuCM350BBCZ Eval-ADUCM350EBZ Driver SW release -->
+
+<ssl_manifest>
+
+<!-- ADuCM350BBCZ CSPY TTH support file -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\cspy\common.cspy.tth.bat"/>
+
+<!-- ADuCM350BBCZ driver documentation -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\doc\ADuCM350BBCZ Device Drivers Getting Started Guide.pdf"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\doc\ADuCM350BBCZ Device Drivers Release Notes.pdf"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\doc\ADuCM350BBCZ Device Drivers Release Notes.rtf"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\doc\ADuCM350BBCZ Software Users Guide.pdf"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\doc\html"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\doc\manifest.xml"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\doc\readme.txt"/>
+
+<!-- ADuCM350BBCZ driver includes -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\ADuCM350_device.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\adi_int.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\adi_int_id.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\adi_nvic.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\adi_rtos.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\adi_sid_cm350.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\adi_types.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\adi_version.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\afe.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\afe_lib.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\afe_sequences.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\beep.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\captouch.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\captouch_lib.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\cdefADuCM350.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\config\adi_afe_config.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\config\adi_beep_config.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\config\adi_crc_config.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\config\adi_ct_config.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\config\adi_fee_config.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\config\adi_global_config.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\config\adi_gpt_config.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\config\adi_i2c_config.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\config\adi_i2s_config.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\config\adi_lcd_config.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\config\adi_pdi_config.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\config\adi_rng_config.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\config\adi_spi_config.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\config\adi_uart_config.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\config\adi_wdt_config.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\config\adi_wut_config.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\crc.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\defADuCM350.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\device.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\dma.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\flash.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\gpio.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\gpt.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\i2c.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\i2s.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\lcd.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\lcd\lcd_VIM828.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\macros.h"/>
+    <f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\metrics.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\mipi\ssd1963.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\misra.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\pdi.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\rng.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\rtc.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\spi.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\startup.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\system.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\uart.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\wdt.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\inc\wut.h"/>
+
+<!-- ADuCM350BBCZ driver sources -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\src\adi_int.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\src\adi_nvic.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\src\afe.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\src\afe_lib.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\src\beep.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\src\captouch.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\src\captouch_lib.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\src\crc.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\src\dma.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\src\flash.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\src\gpio.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\src\gpt.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\src\i2c.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\src\i2s.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\src\lcd.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\src\lcd\lcd_VIM828.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\src\metrics.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\src\mipi\ssd1963.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\src\pdi.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\src\rng.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\src\rtc.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\src\spi.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\src\startup.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\src\system.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\src\uart.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\src\wdt.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\src\wut.c"/>
+
+<!-- ADuCM350BBCZ OSAL sources -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\noos\Source\adi_osal.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\noos\Source\adi_osal_noos.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\noos\Source\adi_osal_noos_active.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\noos\Source\adi_osal_noos_critical.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\noos\Source\adi_osal_noos_event.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\noos\Source\adi_osal_noos_init.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\noos\Source\adi_osal_noos_mutex.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\noos\Source\adi_osal_noos_prof.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\noos\Source\adi_osal_noos_rtl_lock.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\noos\Source\adi_osal_noos_sem.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\noos\Source\adi_osal_noos_thread.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\noos\Source\adi_osal_noos_timing.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\noos\Source\adi_osal_noos_tls.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\noos\Source\osal_common.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\noos\Source\osal_noos.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\noos\Source\version.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\uCOS-II\Lib\iar\libosal.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\uCOS-II\Lib\iar\libosal.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\uCOS-II\Lib\iar\libosal.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\uCOS-II\Ports\adi_osal_arch.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\uCOS-II\Ports\adi_osal_arch_c.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\uCOS-II\Ports\adi_osal_arch_int_table.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\uCOS-II\Ports\adi_osal_arch_internal.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\uCOS-II\Ports\adi_osal_ucos2_arch_c.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\uCOS-II\Source\adi_osal.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\uCOS-II\Source\adi_osal_ucos2.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\uCOS-II\Source\adi_osal_ucos2_critical.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\uCOS-II\Source\adi_osal_ucos2_event.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\uCOS-II\Source\adi_osal_ucos2_init.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\uCOS-II\Source\adi_osal_ucos2_message.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\uCOS-II\Source\adi_osal_ucos2_mutex.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\uCOS-II\Source\adi_osal_ucos2_rtl_lock.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\uCOS-II\Source\adi_osal_ucos2_sem.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\uCOS-II\Source\adi_osal_ucos2_thread.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\uCOS-II\Source\adi_osal_ucos2_timing.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\uCOS-II\Source\adi_osal_ucos2_tls.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\uCOS-II\Source\app_cfg.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\uCOS-II\Source\os_cfg.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\uCOS-II\Source\osal_common.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\uCOS-II\Source\osal_ucos.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\osal\uCOS-II\Source\version.h"/>
+
+<!-- ADuCM350BBCZ tools files -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\tools\IElfTool\Debug_Win32_9\ielftool.exe"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\tools\IElfTool\ielftool_9.sln"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\tools\IElfTool\ielftool_9.vcproj"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\tools\IElfTool\ielftool_9.vcxproj"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\tools\IElfTool\src"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\tools\PinMuxUI\PinMux64.jar"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\tools\PinMuxUI\PinMuxToolConfig.JPG"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\tools\PinMuxUI\Readme_PinMuxTool.html"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\tools\SerialDownloader\CM3WSD"/>
+
+<!-- ADuCM350BBCZ USB sources -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\usb\inc\drivers\usb\controller\device\adi_usbd_dev.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\usb\inc\drivers\usb\controller\device\config\adi_usbd_dev_cfg.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\usb\inc\drivers\usb\controller\device\config\musbhdrc\adi_usbd_dev_musbhdrc_cfg.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\usb\inc\drivers\usb\controller\device\config\musbmhdrc\adi_usbd_dev_musbmhdrc_cfg.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\usb\inc\drivers\usb\controller\musbmhdrc\adi_usb_dev_musbmhdrc.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\usb\src\drivers\usb\controller\musbmhdrc\adi_usb_dev_common.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\usb\src\drivers\usb\controller\musbmhdrc\adi_usb_dev_musbmhdrc.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\usb\src\drivers\usb\controller\musbmhdrc\adi_usb_dev_musbmhdrc_intrpt.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\usb\src\drivers\usb\controller\musbmhdrc\adi_usb_dev_musbmhdrc_local.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\usb\src\drivers\usb\controller\musbmhdrc\adi_usb_dev_musbmhdrc_platform.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\usb\src\drivers\usb\controller\musbmhdrc\adi_usb_dev_musbmhdrc_platform.h"/>
+    <f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\usb\src\drivers\usb\controller\musbmhdrc\adi_usbd_musbmhdrc.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\usb\src\drivers\usb\controller\musbmhdrc\adi_usbh_musbmhdrc.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\usb\ucusb\Ports\Drivers\ADI\BSP\musbmhdrc\usbd_bsp_aducm350.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\usb\ucusb\Ports\Drivers\ADI\BSP\musbmhdrc\usbd_bsp_musbmhdrc.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\usb\ucusb\Ports\Drivers\ADI\BSP\usbd_bsp_dev.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\usb\ucusb\Ports\Drivers\ADI\BSP\usbd_bsp_dev.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\usb\ucusb\Ports\Drivers\ADI\usbd_drv_adi.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\usb\ucusb\Ports\Drivers\ADI\usbd_drv_adi.h"/>
+
+<!-- ADuCM350BBCZ EXAMPLES... -->
+
+<!-- common test code -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\test_common.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\test_common.h"/>
+
+<!-- AFE_Examples -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\AFE_Examples\iar\AFE_Examples.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\AFE_Examples\Readme.txt"/>
+
+<!-- AFE -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\AfeTest\AfeTest.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\AfeTest\Readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\AfeTest\iar\afeTest.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\AfeTest\iar\afeTest.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\AfeTest\iar\afeTest.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\AfeTest\iar\config.txt"/>
+
+<!-- AfeCustomInterrupt -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\AfeCustomInterrupt\AfeCustomInterrupt.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\AfeCustomInterrupt\Readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\AfeCustomInterrupt\iar\AfeCustomInterrupt.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\AfeCustomInterrupt\iar\AfeCustomInterrupt.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\AfeCustomInterrupt\iar\AfeCustomInterrupt.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\AfeCustomInterrupt\iar\config.txt"/>
+
+<!-- AmperometricMeasurement -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\AmperometricMeasurement\AmperometricMeasurement.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\AmperometricMeasurement\PinMux.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\AmperometricMeasurement\Readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\AmperometricMeasurement\iar\AmperometricMeasurement.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\AmperometricMeasurement\iar\AmperometricMeasurement.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\AmperometricMeasurement\iar\AmperometricMeasurement.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\AmperometricMeasurement\iar\config.txt"/>
+
+<!-- AuxChanMeasurement -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\AuxChanMeasurement\AuxChanMeasurement.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\AuxChanMeasurement\PinMux.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\AuxChanMeasurement\Readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\AuxChanMeasurement\iar\AuxChanMeasurement.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\AuxChanMeasurement\iar\AuxChanMeasurement.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\AuxChanMeasurement\iar\AuxChanMeasurement.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\AuxChanMeasurement\iar\config.txt"/>
+
+<!-- BeepTest -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\BeepTest\BeepTest.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\BeepTest\Readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\BeepTest\beep_pinmux.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\BeepTest\iar\BeepTest.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\BeepTest\iar\BeepTest.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\BeepTest\iar\BeepTest.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\BeepTest\iar\config.txt"/>
+
+<!-- Blinky -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Blinky\Blinky.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Blinky\iar\Blinky.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Blinky\iar\Blinky.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Blinky\iar\Blinky.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Blinky\iar\config.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Blinky\readme.txt"/>
+
+<!-- Captouch_5ButtonsTest -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Captouch_5ButtonsTest\Captouch_5ButtonsTest.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Captouch_5ButtonsTest\Readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Captouch_5ButtonsTest\ct_pinmux.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Captouch_5ButtonsTest\iar\Captouch_5ButtonsTest.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Captouch_5ButtonsTest\iar\Captouch_5ButtonsTest.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Captouch_5ButtonsTest\iar\Captouch_5ButtonsTest.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Captouch_5ButtonsTest\iar\config.txt"/>
+
+<!-- Captouch_AwakeTest -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Captouch_AwakeTest\Captouch_AwakeTest.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Captouch_AwakeTest\Readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Captouch_AwakeTest\ct_pinmux.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Captouch_AwakeTest\iar\Captouch_AwakeTest.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Captouch_AwakeTest\iar\Captouch_AwakeTest.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Captouch_AwakeTest\iar\Captouch_AwakeTest.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Captouch_AwakeTest\iar\config.txt"/>
+
+<!-- Captouch_Test -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Captouch_Test\Captouch_RegressionTest.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Captouch_Test\Readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Captouch_Test\ct_pinmux.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Captouch_Test\iar\Captouch_RegressionTest.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Captouch_Test\iar\Captouch_RegressionTest.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Captouch_Test\iar\Captouch_RegressionTest.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Captouch_Test\iar\config.txt"/>
+
+<!-- CrcDriverTest -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\CrcDriverTest\CrcDriverTest.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\CrcDriverTest\Readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\CrcDriverTest\iar\CrcDriverTest.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\CrcDriverTest\iar\CrcDriverTest.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\CrcDriverTest\iar\CrcDriverTest.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\CrcDriverTest\iar\config.txt"/>
+
+<!-- Current_Profiling -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Current_Profiling\ADuCM350BBCZ_CP.icf"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Current_Profiling\CurrentProfiling.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Current_Profiling\CurrentProfiling_Main.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Current_Profiling\CurrentProfiling_States.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Current_Profiling\adi_CP_pinmux.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Current_Profiling\iar\CurrentProfiling.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Current_Profiling\iar\CurrentProfiling.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Current_Profiling\iar\CurrentProfiling.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Current_Profiling\iar\config.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Current_Profiling\test_common_CP.c"/>
+
+<!-- FlashTest -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\FlashTest\FlashTest.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\FlashTest\PinMux.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\FlashTest\PinMux.dat"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\FlashTest\Readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\FlashTest\crc32.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\FlashTest\crc32.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\FlashTest\iar\FlashTest.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\FlashTest\iar\FlashTest.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\FlashTest\iar\FlashTest.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\FlashTest\iar\config.txt"/>
+
+<!-- gpio_test -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\gpio_test\gpio_test.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\gpio_test\iar\config.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\gpio_test\iar\gpio_test.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\gpio_test\iar\gpio_test.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\gpio_test\iar\gpio_test.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\gpio_test\readme.txt"/>
+
+<!-- GpioTest -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\GpioTest\GpioTest.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\GpioTest\iar\GpioTest.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\GpioTest\iar\GpioTest.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\GpioTest\iar\GpioTest.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\GpioTest\iar\config.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\GpioTest\readme.txt"/>
+
+<!-- GptTest -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\GptTest\GptTest.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\GptTest\iar\GptTest.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\GptTest\iar\GptTest.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\GptTest\iar\GptTest.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\GptTest\iar\config.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\GptTest\readme.txt"/>
+
+<!-- I2cTest -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\I2cTest\I2cTest.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\I2cTest\Readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\I2cTest\i2c_pinmux.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\I2cTest\iar\I2cTest.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\I2cTest\iar\I2cTest.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\I2cTest\iar\I2cTest.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\I2cTest\iar\config.txt"/>
+
+<!-- I2STest -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\I2STest\I2STest.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\I2STest\Readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\I2STest\adi_pinmux.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\I2STest\iar\I2STest.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\I2STest\iar\I2STest.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\I2STest\iar\I2STest.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\I2STest\iar\config.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\I2STest\sine_mono16.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\I2STest\sine_stereo16.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\I2STest\sine_stereo24.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\I2STest\sine_stereo24.txt"/>
+
+<!-- ImpedanceMeasurement_2Wire -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ImpedanceMeasurement_2Wire\ImpedanceMeasurement_2Wire.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ImpedanceMeasurement_2Wire\PinMux.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ImpedanceMeasurement_2Wire\Readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ImpedanceMeasurement_2Wire\iar\ImpedanceMeasurement_2Wire.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ImpedanceMeasurement_2Wire\iar\ImpedanceMeasurement_2Wire.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ImpedanceMeasurement_2Wire\iar\ImpedanceMeasurement_2Wire.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ImpedanceMeasurement_2Wire\iar\config.txt"/>
+
+<!-- ImpedanceMeasurement_4WireBioIsolated -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ImpedanceMeasurement_4WireBioIsolated\ImpedanceMeasurement_4WireBioIsolated.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ImpedanceMeasurement_4WireBioIsolated\PinMux.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ImpedanceMeasurement_4WireBioIsolated\Readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ImpedanceMeasurement_4WireBioIsolated\iar\ImpedanceMeasurement_4WireBioIsolated.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ImpedanceMeasurement_4WireBioIsolated\iar\ImpedanceMeasurement_4WireBioIsolated.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ImpedanceMeasurement_4WireBioIsolated\iar\ImpedanceMeasurement_4WireBioIsolated.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ImpedanceMeasurement_4WireBioIsolated\iar\config.txt"/>
+
+<!-- LCDTest_VIM_828 -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\LCDTest_VIM_828\Readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\LCDTest_VIM_828\adi_pinmux.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\LCDTest_VIM_828\iar\LCDTest_VIM_828.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\LCDTest_VIM_828\iar\LCDTest_VIM_828.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\LCDTest_VIM_828\iar\LCDTest_VIM_828.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\LCDTest_VIM_828\iar\config.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\LCDTest_VIM_828\lcdtest_VIM_828.c"/>
+
+<!-- ParityTest -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ParityTest\Readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ParityTest\ParityTest.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ParityTest\PinMux.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ParityTest\PinMux.dat"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ParityTest\iar\ParityTest.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ParityTest\iar\ParityTest.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ParityTest\iar\ParityTest.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ParityTest\iar\config.txt"/>
+
+<!-- RngTest -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RngTest\Readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RngTest\RngTest.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RngTest\iar\RngTest.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RngTest\iar\RngTest.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RngTest\iar\RngTest.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RngTest\iar\config.txt"/>
+
+<!-- RtcAlarmTest -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RtcAlarmTest\Readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RtcAlarmTest\RtcAlarmTest.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RtcAlarmTest\pinmux.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RtcAlarmTest\iar\RtcAlarmTest.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RtcAlarmTest\iar\RtcAlarmTest.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RtcAlarmTest\iar\RtcAlarmTest.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RtcAlarmTest\iar\config.txt"/>
+
+<!-- RtcGptRtosTest -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RtcGptRtosTest\Readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RtcGptRtosTest\RtcGptRtosTest.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RtcGptRtosTest\adi_global_config.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RtcGptRtosTest\app_hooks.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RtcGptRtosTest\iar\RtcGptRtosTest.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RtcGptRtosTest\iar\RtcGptRtosTest.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RtcGptRtosTest\iar\RtcGptRtosTest.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RtcGptRtosTest\iar\config.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RtcGptRtosTest\includes.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RtcGptRtosTest\lib_cfg.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RtcGptRtosTest\os_cfg.h"/>
+
+<!-- RtcTest -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RtcTest\Readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RtcTest\RtcTest.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RtcTest\pinmux.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RtcTest\iar\RtcTest.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RtcTest\iar\RtcTest.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RtcTest\iar\RtcTest.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RtcTest\iar\config.txt"/>
+
+<!-- RtosTest -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RtosTest\Readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RtosTest\RtosTest.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RtosTest\adi_global_config.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RtosTest\app_hooks.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RtosTest\iar\RtosTest.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RtosTest\iar\RtosTest.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RtosTest\iar\RtosTest.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RtosTest\iar\config.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RtosTest\includes.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RtosTest\lib_cfg.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\RtosTest\os_cfg.h"/>
+
+<!-- SpiFlashTest -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\SpiFlashTest\Readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\SpiFlashTest\SpiFlashTest.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\SpiFlashTest\iar\SpiFlashTest.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\SpiFlashTest\iar\SpiFlashTest.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\SpiFlashTest\iar\SpiFlashTest.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\SpiFlashTest\iar\config.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\SpiFlashTest\spi_pinmux.c"/>
+
+<!-- SpiTest -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\SpiTest\Readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\SpiTest\SpiTest.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\SpiTest\iar\config.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\SpiTest\iar\spiTest.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\SpiTest\iar\spiTest.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\SpiTest\iar\spiTest.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\SpiTest\spi_pinmux.c"/>
+
+<!-- SPItoFTDI -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\SPItoFTDI\Readme.pdf"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\SPItoFTDI\Readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\SPItoFTDI\SPItoFTDI.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\SPItoFTDI\ftdi.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\SPItoFTDI\iar\config.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\SPItoFTDI\iar\SPItoFTDI.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\SPItoFTDI\iar\SPItoFTDI.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\SPItoFTDI\iar\SPItoFTDI.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\SPItoFTDI\spi_pinmux.c"/>
+	
+<!-- stress_test -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\stress_test\iar\config.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\stress_test\iar\stress_test.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\stress_test\iar\stress_test.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\stress_test\iar\stress_test.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\stress_test\readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\stress_test\stress_test.c"/>
+
+<!-- SysClkTest -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\SysClkTest\Readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\SysClkTest\SysClkTest.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\SysClkTest\iar\SysClkTest.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\SysClkTest\iar\SysClkTest.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\SysClkTest\iar\SysClkTest.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\SysClkTest\iar\config.txt"/>
+
+<!-- SysTick -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\SysTick\Readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\SysTick\SimpleSystick.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\SysTick\iar\SysTick.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\SysTick\iar\SysTick.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\SysTick\iar\SysTick.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\SysTick\iar\config.txt"/>
+
+<!-- ThreadSpi -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ThreadSpi\Readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ThreadSpi\ThreadSpi.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ThreadSpi\app_hooks.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ThreadSpi\iar\ThreadSpi.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ThreadSpi\iar\ThreadSpi.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ThreadSpi\iar\ThreadSpi.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ThreadSpi\iar\config.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ThreadSpi\includes.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ThreadSpi\lib_cfg.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ThreadSpi\pinmux.c"/>
+
+<!-- ThreadSpiMasterSlave -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ThreadSpiMasterSlave\readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ThreadSpiMasterSlave\adi_global_config.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ThreadSpiMasterSlave\app_cfg.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ThreadSpiMasterSlave\app_hooks.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ThreadSpiMasterSlave\includes.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ThreadSpiMasterSlave\lib_cfg.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ThreadSpiMasterSlave\os_cfg.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ThreadSpiMasterSlave\pinmux.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ThreadSpiMasterSlave\SpiMaster.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ThreadSpiMasterSlave\SpiMasterSlave.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ThreadSpiMasterSlave\SpiMasterSlave.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ThreadSpiMasterSlave\SpiSlave.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ThreadSpiMasterSlave\iar\SpiMasterSlaveTest.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ThreadSpiMasterSlave\iar\SpiMasterSlaveTest.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ThreadSpiMasterSlave\iar\SpiMasterSlaveTest.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ThreadSpiMasterSlave\iar\config.txt"/>
+
+	
+<!-- ThreadTest -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ThreadTest\ThreadTest.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ThreadTest\app_cfg.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ThreadTest\app_hooks.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ThreadTest\iar\ThreadTest.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ThreadTest\iar\ThreadTest.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ThreadTest\iar\ThreadTest.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ThreadTest\iar\config.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ThreadTest\includes.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ThreadTest\os_cfg.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\ThreadTest\readme.txt"/>
+
+<!-- TimerTest -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\TimerTest\Readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\TimerTest\TimerTest.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\TimerTest\iar\TimerTest.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\TimerTest\iar\TimerTest.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\TimerTest\iar\TimerTest.eww"/>
+    <f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\TimerTest\iar\config.txt"/>
+
+<!-- UartTest -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\UartTest\PinMux.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\UartTest\Readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\UartTest\UartTest.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\UartTest\iar\UartTest.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\UartTest\iar\UartTest.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\UartTest\iar\UartTest.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\UartTest\iar\config.txt"/>
+
+<!-- Uart_CharEcho -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Uart_CharEcho\PinMux.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Uart_CharEcho\Readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Uart_CharEcho\Uart_CharEcho.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Uart_CharEcho\iar\Uart_CharEcho.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Uart_CharEcho\iar\Uart_CharEcho.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Uart_CharEcho\iar\Uart_CharEcho.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\Uart_CharEcho\iar\config.txt"/>
+
+<!-- uCOS-II-USBD-CDC -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-CDC\app.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-CDC\app_cfg.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-CDC\app_hooks.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-CDC\app_usbd.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-CDC\app_usbd.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-CDC\app_usbd_cdc.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-CDC\iar\cdc.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-CDC\iar\cdc.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-CDC\iar\cdc.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-CDC\iar\config.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-CDC\includes.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-CDC\lib_cfg.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-CDC\os_cfg.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-CDC\readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-CDC\usbd_cfg.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-CDC\usbd_dev_cfg.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-CDC\usbd_dev_cfg.h"/>
+
+<!-- uCOS-II-USBD-CDC Host side files -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-CDC\host\driver\dpinst32.exe"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-CDC\host\driver\dpinst64.exe"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-CDC\host\driver\readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-CDC\host\driver\usbser.cat"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-CDC\host\driver\usbser.inf"/>
+
+<!-- uCOS-II-USBD-MSC -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-MSC\app.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-MSC\app_cfg.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-MSC\app_hooks.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-MSC\app_usbd.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-MSC\app_usbd.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-MSC\app_usbd_cfg.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-MSC\app_usbd_msc.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-MSC\iar\config.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-MSC\iar\msc.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-MSC\iar\msc.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-MSC\iar\msc.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-MSC\includes.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-MSC\lib_cfg.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-MSC\os_cfg.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-MSC\readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-MSC\usbd_cfg.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-MSC\usbd_dev_cfg.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-MSC\usbd_dev_cfg.h"/>
+
+<!-- uCOS-II-USBD-PHDC -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-PHDC\app.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-PHDC\app_cfg.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-PHDC\app_hooks.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-PHDC\app_usbd.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-PHDC\app_usbd.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-PHDC\app_usbd_phdc_basic.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-PHDC\app_usbd_phdc_multiple.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-PHDC\hostapp.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-PHDC\iar\config.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-PHDC\iar\phdc.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-PHDC\iar\phdc.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-PHDC\iar\phdc.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-PHDC\includes.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-PHDC\lib_cfg.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-PHDC\os_cfg.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-PHDC\readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-PHDC\usbd_cfg.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-PHDC\usbd_dev_cfg.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-PHDC\usbd_dev_cfg.h"/>
+
+<!-- uCOS-II-USBD-PHDC Host side files -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-PHDC\host\basic\PHDC.exe"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-PHDC\host\basic\USBDev_API.dll"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-PHDC\host\driver\WinUSB_single.inf"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-PHDC\host\driver\amd64\WdfCoInstaller01009.dll"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-PHDC\host\driver\amd64\winusbcoinstaller2.dll"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-PHDC\host\driver\dpinst32.exe"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-PHDC\host\driver\dpinst64.exe"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-PHDC\host\driver\ia64\WdfCoInstaller01009.dll"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-PHDC\host\driver\ia64\winusbcoinstaller2.dll"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-PHDC\host\driver\readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-PHDC\host\driver\winusb_single.cat"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-PHDC\host\driver\x86\WdfCoInstaller01009.dll"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-PHDC\host\driver\x86\winusbcoinstaller2.dll"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-PHDC\host\multiple\PHDC.exe"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-PHDC\host\multiple\USBDev_API.dll"/>
+
+<!-- UnipolarCurrentMeasurement -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\UnipolarCurrentMeasurement\UnipolarCurrentMeasurement.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\UnipolarCurrentMeasurement\PinMux.c"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\UnipolarCurrentMeasurement\Readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\UnipolarCurrentMeasurement\iar\UnipolarCurrentMeasurement.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\UnipolarCurrentMeasurement\iar\UnipolarCurrentMeasurement.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\UnipolarCurrentMeasurement\iar\UnipolarCurrentMeasurement.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\UnipolarCurrentMeasurement\iar\config.txt"/>
+
+<!-- wdt_test -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\wdt_test\iar\config.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\wdt_test\iar\wdt_test.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\wdt_test\iar\wdt_test.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\wdt_test\iar\wdt_test.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\wdt_test\readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\wdt_test\wdt_test.c"/>
+
+<!-- wut_test -->
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\wut_test\adi_wut_config.h"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\wut_test\iar\config.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\wut_test\iar\wut_test.ewd"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\wut_test\iar\wut_test.ewp"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\wut_test\iar\wut_test.eww"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\wut_test\readme.txt"/>
+	<f p="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\wut_test\wut_test.c"/>
+
+</ssl_manifest>
+
+<!-- debugging build failure... build script may not know what to do with this..
+<drivers team="uCUSB\UCUSB">
+	<driver name="PHDC" f="ADuCM350BBCZ\Eval-ADUCM350EBZ\examples\uCOS-II-USBD-PHDC\host\driver\WinUSB_single.inf" supports64="true" signed32="true" signed64="true"/>
+</drivers>
+-->
+

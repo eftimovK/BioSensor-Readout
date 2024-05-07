@@ -1,0 +1,25 @@
+var searchData=
+[
+  ['b',['B',['../struct_a_d_i___u_s_b___f_i_f_o___type_def.html#a4bc4aa9c2afa218704e576fc3576f5dd',1,'ADI_USB_FIFO_TypeDef']]],
+  ['baselinecaldelay',['BaselineCalDelay',['../struct_a_d_i___c_t___b_a_s_e_l_i_n_e___t_y_p_e.html#a5e03b109e6d514f90d404993c09e3b25',1,'ADI_CT_BASELINE_TYPE']]],
+  ['baselinesettings',['BaselineSettings',['../struct_a_d_i___c_t___g_e_n_e_r_i_c___s_e_t_t_i_n_g_s___t_y_p_e.html#a75eb827c27fa534b64fe04021af21fff',1,'ADI_CT_GENERIC_SETTINGS_TYPE']]],
+  ['baudrate',['BaudRate',['../struct_a_d_i___u_a_r_t___g_e_n_e_r_i_c___s_e_t_t_i_n_g_s___t_y_p_e.html#ac731069e2737eb9498d456aa8fa8198c',1,'ADI_UART_GENERIC_SETTINGS_TYPE']]],
+  ['bblockingmode',['bBlockingMode',['../struct_a_d_i___s_p_i___d_e_v___g_e_n_e_r_i_c___s_e_t_t_i_n_g_s___t_y_p_e.html#a2801514931c5d9d80ab4bda131157ac4',1,'ADI_SPI_DEV_GENERIC_SETTINGS_TYPE::bBlockingMode()'],['../struct_a_d_i___u_a_r_t___g_e_n_e_r_i_c___s_e_t_t_i_n_g_s___t_y_p_e.html#a2801514931c5d9d80ab4bda131157ac4',1,'ADI_UART_GENERIC_SETTINGS_TYPE::bBlockingMode()']]],
+  ['bdmamode',['bDmaMode',['../struct_a_d_i___s_p_i___d_e_v___g_e_n_e_r_i_c___s_e_t_t_i_n_g_s___t_y_p_e.html#aea3fd2f20dfe48f358c836999dd245da',1,'ADI_SPI_DEV_GENERIC_SETTINGS_TYPE::bDmaMode()'],['../struct_a_d_i___u_a_r_t___g_e_n_e_r_i_c___s_e_t_t_i_n_g_s___t_y_p_e.html#aea3fd2f20dfe48f358c836999dd245da',1,'ADI_UART_GENERIC_SETTINGS_TYPE::bDmaMode()']]],
+  ['beep_5fcfg',['BEEP_CFG',['../struct_a_d_i___b_e_e_p___type_def.html#a1143ad5ddf6c0bf5eebef229d22d78c2',1,'ADI_BEEP_TypeDef']]],
+  ['beep_5fstat',['BEEP_STAT',['../struct_a_d_i___b_e_e_p___type_def.html#a9b330930305579740a563509c062864d',1,'ADI_BEEP_TypeDef']]],
+  ['beep_5ftone_5fa',['BEEP_TONE_A',['../struct_a_d_i___b_e_e_p___type_def.html#aef47fd18ca8ba2b9c505d637daf6aa98',1,'ADI_BEEP_TypeDef']]],
+  ['beep_5ftone_5fb',['BEEP_TONE_B',['../struct_a_d_i___b_e_e_p___type_def.html#aa0dbb251629404a0c9a17e14ad044f1d',1,'ADI_BEEP_TypeDef']]],
+  ['binterruptmode',['bInterruptMode',['../struct_a_d_i___u_a_r_t___g_e_n_e_r_i_c___s_e_t_t_i_n_g_s___t_y_p_e.html#ae109a63d6b81da99a62b5215cdab5520',1,'ADI_UART_GENERIC_SETTINGS_TYPE']]],
+  ['bitrate',['Bitrate',['../struct_a_d_i___s_p_i___d_e_v___g_e_n_e_r_i_c___s_e_t_t_i_n_g_s___t_y_p_e.html#a52ac76b9c557e660bed6099e48315699',1,'ADI_SPI_DEV_GENERIC_SETTINGS_TYPE']]],
+  ['bl_5fcoeff',['BL_Coeff',['../struct_a_d_i___c_t___b_a_s_e_l_i_n_e___t_y_p_e.html#a41a7c518657cfdee68ee41addb20180e',1,'ADI_CT_BASELINE_TYPE']]],
+  ['bmarbit0',['BMARBIT0',['../struct_a_d_i___b_u_s_m___type_def.html#ac8edcd1df5a766f843cd3cf50761424b',1,'ADI_BUSM_TypeDef']]],
+  ['bmarbit1',['BMARBIT1',['../struct_a_d_i___b_u_s_m___type_def.html#a8c364fb911d6028ab6a26073ddd93c6a',1,'ADI_BUSM_TypeDef']]],
+  ['bmarbit2',['BMARBIT2',['../struct_a_d_i___b_u_s_m___type_def.html#aad1505707fa2844fed53d9472750ea0e',1,'ADI_BUSM_TypeDef']]],
+  ['bmarbit3',['BMARBIT3',['../struct_a_d_i___b_u_s_m___type_def.html#af39da9d1076a8ba7c30935e24abed66d',1,'ADI_BUSM_TypeDef']]],
+  ['bmarbit4',['BMARBIT4',['../struct_a_d_i___b_u_s_m___type_def.html#ac3b579947411fa6b17f95db29cf2717a',1,'ADI_BUSM_TypeDef']]],
+  ['bmarbit5',['BMARBIT5',['../struct_a_d_i___b_u_s_m___type_def.html#a0d17a8153317de6c690b7d3fefe12983',1,'ADI_BUSM_TypeDef']]],
+  ['brxincrement',['bRxIncrement',['../struct_a_d_i___s_p_i___t_r_a_n_s_c_e_i_v_e___t_y_p_e.html#a8a1c61b4e6941e2092074d11346915bf',1,'ADI_SPI_TRANSCEIVE_TYPE']]],
+  ['btxincrement',['bTxIncrement',['../struct_a_d_i___s_p_i___t_r_a_n_s_c_e_i_v_e___t_y_p_e.html#a54fff51273ee7d9354418802631fb4a0',1,'ADI_SPI_TRANSCEIVE_TYPE']]],
+  ['bypasspga',['ByPassPGA',['../struct_a_d_i___s_t_a_g_e___t_y_p_e.html#ae433d2cdb9854734f9434d85d30ebc63',1,'ADI_STAGE_TYPE']]]
+];

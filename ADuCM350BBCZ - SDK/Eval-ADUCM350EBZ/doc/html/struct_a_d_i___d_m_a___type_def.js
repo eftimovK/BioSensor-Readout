@@ -1,0 +1,26 @@
+var struct_a_d_i___d_m_a___type_def =
+[
+    [ "DMAADBPTR", "struct_a_d_i___d_m_a___type_def.html#a1ad4b0712e27b9568c2e08e775ebe6e3", null ],
+    [ "DMAALTCLR", "struct_a_d_i___d_m_a___type_def.html#abb3842671cc615f7184c317e2741f613", null ],
+    [ "DMAALTSET", "struct_a_d_i___d_m_a___type_def.html#a74d97e523067cabc564ded6742584071", null ],
+    [ "DMABSCLR", "struct_a_d_i___d_m_a___type_def.html#a003d8778af7663bc817461f58c38014b", null ],
+    [ "DMABSSET", "struct_a_d_i___d_m_a___type_def.html#a6d2675bbae3e4f360563f06001f2e3f9", null ],
+    [ "DMACFG", "struct_a_d_i___d_m_a___type_def.html#ae3ffc84e1d0a9e4e82e0b3bb2361cac7", null ],
+    [ "DMADSTADCLR", "struct_a_d_i___d_m_a___type_def.html#ab9959dfbd68caea8b57c33e705a85900", null ],
+    [ "DMADSTADSET", "struct_a_d_i___d_m_a___type_def.html#ab62b71a7bf842a4c11cc03b47b871692", null ],
+    [ "DMAENCLR", "struct_a_d_i___d_m_a___type_def.html#a257cf3c39f0b171340fba2ab13837c4e", null ],
+    [ "DMAENSET", "struct_a_d_i___d_m_a___type_def.html#a25d7d0f19a7fae548ad81f1dfc4d1316", null ],
+    [ "DMAERRCHNLCLR", "struct_a_d_i___d_m_a___type_def.html#af97d6b0b82dd56d1bcd7b44a5e035c34", null ],
+    [ "DMAERRCLR", "struct_a_d_i___d_m_a___type_def.html#a5e41598086a84ae42f8ab6f42b30bdee", null ],
+    [ "DMAINVALIDDESCCLR", "struct_a_d_i___d_m_a___type_def.html#abddd9e70a084bf6926ce6c79174229ea", null ],
+    [ "DMAPDBPTR", "struct_a_d_i___d_m_a___type_def.html#a377ae8efe8a2e5b1c4309b42fa8adfcf", null ],
+    [ "DMAPRICLR", "struct_a_d_i___d_m_a___type_def.html#aca2ef45802d8663bba8fa5d9c97cacd4", null ],
+    [ "DMAPRISET", "struct_a_d_i___d_m_a___type_def.html#a1507ea1cd7c17c3cf7899017529f267e", null ],
+    [ "DMAREVID", "struct_a_d_i___d_m_a___type_def.html#a39b4cd5dc3fae022a0718aed4292e4f4", null ],
+    [ "DMARMSKCLR", "struct_a_d_i___d_m_a___type_def.html#aa7f6b90dbd3116dceabb8b332e3e3749", null ],
+    [ "DMARMSKSET", "struct_a_d_i___d_m_a___type_def.html#a1b2cc66b58618e20d901449a02c2157b", null ],
+    [ "DMASRCADCLR", "struct_a_d_i___d_m_a___type_def.html#ab2f4cfc0730a6931621b7e4fac1ca701", null ],
+    [ "DMASRCADSSET", "struct_a_d_i___d_m_a___type_def.html#a1b1e4060661ecbc60a52c6bb9191ecba", null ],
+    [ "DMASTA", "struct_a_d_i___d_m_a___type_def.html#a0025a790ab94d37534071741655a3f7f", null ],
+    [ "DMASWREQ", "struct_a_d_i___d_m_a___type_def.html#abb1ebfbbc84fe560b96a1ea21f08366c", null ]
+];

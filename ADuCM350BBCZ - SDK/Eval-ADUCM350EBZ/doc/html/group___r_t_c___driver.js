@@ -1,0 +1,118 @@
+var group___r_t_c___driver =
+[
+    [ "ADI_RTC_CONTROL_ALARM_ENABLE", "group___r_t_c___driver.html#ga84af3bb645818973c6182c2467060e12", null ],
+    [ "ADI_RTC_CONTROL_DEVICE_ENABLE", "group___r_t_c___driver.html#gaea82eaf1d8422da881ed206f663ff10b", null ],
+    [ "ADI_RTC_CONTROL_LCD_UPDATE_ENABLE", "group___r_t_c___driver.html#gaaea3f95dd6f453d4a200b3d769fd4d29", null ],
+    [ "ADI_RTC_CONTROL_TRIM_ENABLE", "group___r_t_c___driver.html#ga5260b07d74df0773bd65b587d562aa44", null ],
+    [ "ADI_RTC_GATEWAY_FLUSH", "group___r_t_c___driver.html#gafd45965e3313ffe1194033520a33e05d", null ],
+    [ "ADI_RTC_INT_ENA_MASK", "group___r_t_c___driver.html#ga61aec254d739c9ff46ed45e9a4cc4723", null ],
+    [ "ADI_RTC_INT_SOURCE_MASK", "group___r_t_c___driver.html#gaabee5d3a6ddda982a97f997c8277385b", null ],
+    [ "ADI_RTC_LCD_UPDATE_BPOS", "group___r_t_c___driver.html#ga4054507a7f4772d063a2f7718987a386", null ],
+    [ "ADI_RTC_LCD_UPDATE_MASK", "group___r_t_c___driver.html#ga443f65dc5cdca39e39d977392072b318", null ],
+    [ "ADI_RTC_TRIM_INTERVAL_MASK", "group___r_t_c___driver.html#ga16c69861909bb8c9353fbfc0475cd78c", null ],
+    [ "ADI_RTC_TRIM_POLARITY_MASK", "group___r_t_c___driver.html#ga20503ec21e392de4f7ef13304a1785a0", null ],
+    [ "ADI_RTC_TRIM_VALUE_MASK", "group___r_t_c___driver.html#gaf58fb9764742b0bd9d18557ce2630aa6", null ],
+    [ "ADI_RTC_WRITE_ERROR_MASK", "group___r_t_c___driver.html#ga77290215854a7962cf5ff767e30bf0d6", null ],
+    [ "ADI_RTC_WRITE_STATUS_MASK", "group___r_t_c___driver.html#ga49f3e5ce1fbc1493c6bd3336f1879bf7", null ],
+    [ "ASSERT_ADI_MISRA_SUPPRESSIONS", "group___r_t_c___driver.html#ga9a4d2bd9e66f87390df44d6f31345be0", null ],
+    [ "REVERT_ADI_MISRA_SUPPRESSIONS", "group___r_t_c___driver.html#ga9d099d2384f9179a877f93a9318f38d2", null ],
+    [ "ADI_RTC_HANDLE", "group___r_t_c___driver.html#gad4f2de2c0a14eafbcc5bd13cc464c445", null ],
+    [ "ADI_RTC_DEV_ID_TYPE", "group___r_t_c___driver.html#gafd6da7d8046d048ebce10e90d86a4eef", [
+      [ "ADI_RTC_DEVID_0", "group___r_t_c___driver.html#ggafd6da7d8046d048ebce10e90d86a4eefa175066584bca5ab2b07a0d6d5671f3c6", null ],
+      [ "ADI_RTC_MAX_DEVID", "group___r_t_c___driver.html#ggafd6da7d8046d048ebce10e90d86a4eefa8e86dc2b93fd6e16237c3665efc2bb86", null ]
+    ] ],
+    [ "ADI_RTC_INT_ENA_TYPE", "group___r_t_c___driver.html#gaa04c364def14ccfaa32915a7dd0da305", [
+      [ "ADI_RTC_INT_ENA_WRITE_PEND", "group___r_t_c___driver.html#ggaa04c364def14ccfaa32915a7dd0da305abfdf1220473df33925ae4cf442f10a8d", null ],
+      [ "ADI_RTC_INT_ENA_WRITE_SYNC", "group___r_t_c___driver.html#ggaa04c364def14ccfaa32915a7dd0da305a78f4ffcdd641fe8857143e0501c8dcdb", null ],
+      [ "ADI_RTC_INT_ENA_WRITE_PENDERR", "group___r_t_c___driver.html#ggaa04c364def14ccfaa32915a7dd0da305a9fe1b414e1288c91ffa4e7f1ff6a3f25", null ],
+      [ "ADI_RTC_INT_ENA_ISO_DONE", "group___r_t_c___driver.html#ggaa04c364def14ccfaa32915a7dd0da305af795a4c4c6597b55f1fe5e8d99d2cabf", null ],
+      [ "ADI_RTC_INT_ENA_LCD_UPDATE", "group___r_t_c___driver.html#ggaa04c364def14ccfaa32915a7dd0da305a11c85e7b1109720cbe98c2285458d7de", null ],
+      [ "ADI_RTC_INT_ENA_ALARM", "group___r_t_c___driver.html#ggaa04c364def14ccfaa32915a7dd0da305a679b7beb01294868c5fa4331e39ce1bc", null ]
+    ] ],
+    [ "ADI_RTC_INT_SOURCE_TYPE", "group___r_t_c___driver.html#gaf63b8ab674c71fb21f775c60e05a27c7", [
+      [ "ADI_RTC_INT_SOURCE_WRITE_PEND", "group___r_t_c___driver.html#ggaf63b8ab674c71fb21f775c60e05a27c7ae59272526b19772d8832dba69a09a996", null ],
+      [ "ADI_RTC_INT_SOURCE_WRITE_SYNC", "group___r_t_c___driver.html#ggaf63b8ab674c71fb21f775c60e05a27c7a8fc2d05abed4f21f1e7a3e1aeb4aeaa3", null ],
+      [ "ADI_RTC_INT_SOURCE_WRITE_PENDERR", "group___r_t_c___driver.html#ggaf63b8ab674c71fb21f775c60e05a27c7a8b8733627b22b74164ca83c376d4dc65", null ],
+      [ "ADI_RTC_INT_SOURCE_ISO_DONE", "group___r_t_c___driver.html#ggaf63b8ab674c71fb21f775c60e05a27c7afd6a04af29601a918436a36a341d8ecc", null ],
+      [ "ADI_RTC_INT_SOURCE_LCD_UPDATE", "group___r_t_c___driver.html#ggaf63b8ab674c71fb21f775c60e05a27c7a3081bc599be9ea38d52ca62b7f2f941b", null ],
+      [ "ADI_RTC_INT_SOURCE_ALARM", "group___r_t_c___driver.html#ggaf63b8ab674c71fb21f775c60e05a27c7ac8e977b104c329c4ed50a0f598621106", null ],
+      [ "ADI_RTC_INT_SOURCE_FAIL", "group___r_t_c___driver.html#ggaf63b8ab674c71fb21f775c60e05a27c7a4745c8312015d6f62b39f57c28466a62", null ]
+    ] ],
+    [ "ADI_RTC_RESULT_TYPE", "group___r_t_c___driver.html#gaac74a16f65d779a3b9eec8703d7375bb", [
+      [ "ADI_RTC_SUCCESS", "group___r_t_c___driver.html#ggaac74a16f65d779a3b9eec8703d7375bba689719e30df428bba74384c42d7604ba", null ],
+      [ "ADI_RTC_ERR_UNKNOWN_ERROR", "group___r_t_c___driver.html#ggaac74a16f65d779a3b9eec8703d7375bba2418723b640148c9d8b07ffcaaf80caa", null ],
+      [ "ADI_RTC_ERR_CLOCK_FAILSAFE", "group___r_t_c___driver.html#ggaac74a16f65d779a3b9eec8703d7375bba3b25fbe65003a173447f763dc9be78a8", null ],
+      [ "ADI_RTC_ERR_ALREADY_INITIALIZED", "group___r_t_c___driver.html#ggaac74a16f65d779a3b9eec8703d7375bba4808f92109adab5d6ebf1ed31b179bda", null ],
+      [ "ADI_RTC_ERR_BAD_DEV_HANDLE", "group___r_t_c___driver.html#ggaac74a16f65d779a3b9eec8703d7375bbaf1ee8d18155bae0a30c5ebae08b97529", null ],
+      [ "ADI_RTC_ERR_BAD_INSTANCE", "group___r_t_c___driver.html#ggaac74a16f65d779a3b9eec8703d7375bbaa5fff66aed6ddde83be99ddb857d1f71", null ],
+      [ "ADI_RTC_ERR_NOT_INITIALIZED", "group___r_t_c___driver.html#ggaac74a16f65d779a3b9eec8703d7375bba79b11413cd1ed58b17d75a59ea0de7b0", null ],
+      [ "ADI_RTC_ERR_PARAM_OUT_OF_RANGE", "group___r_t_c___driver.html#ggaac74a16f65d779a3b9eec8703d7375bbaa215a8d4d7a98daa2268af3af4464d00", null ]
+    ] ],
+    [ "ADI_RTC_TRIM_INTERVAL_TYPE", "group___r_t_c___driver.html#gaf52390b85b9ffa1e8ef431f5b4ba9a7a", [
+      [ "ADI_RTC_TRIM_INTERVAL_14", "group___r_t_c___driver.html#ggaf52390b85b9ffa1e8ef431f5b4ba9a7aad9446445533267de551ff9c780beb7ea", null ],
+      [ "ADI_RTC_TRIM_INTERVAL_15", "group___r_t_c___driver.html#ggaf52390b85b9ffa1e8ef431f5b4ba9a7aa6e9d4ad13da057b59f1ecbc57ebe063d", null ],
+      [ "ADI_RTC_TRIM_INTERVAL_16", "group___r_t_c___driver.html#ggaf52390b85b9ffa1e8ef431f5b4ba9a7aacf1269f15caa709fa6cfea1e488fde20", null ],
+      [ "ADI_RTC_TRIM_INTERVAL_17", "group___r_t_c___driver.html#ggaf52390b85b9ffa1e8ef431f5b4ba9a7aa0750e081b1d8f14e457fc1e9709a9309", null ]
+    ] ],
+    [ "ADI_RTC_TRIM_POLARITY_TYPE", "group___r_t_c___driver.html#ga2d06b2e6148454d923c762be241c48fe", [
+      [ "ADI_RTC_TRIM_ADD", "group___r_t_c___driver.html#gga2d06b2e6148454d923c762be241c48fea005977ebc0212916a3e29cfef6a7daf2", null ],
+      [ "ADI_RTC_TRIM_SUB", "group___r_t_c___driver.html#gga2d06b2e6148454d923c762be241c48fea36f177e98505e7308c993825754b0e5d", null ]
+    ] ],
+    [ "ADI_RTC_TRIM_VALUE_TYPE", "group___r_t_c___driver.html#ga48d4b8b822c13c9c59ef78b2cd815aab", [
+      [ "ADI_RTC_TRIM_0", "group___r_t_c___driver.html#gga48d4b8b822c13c9c59ef78b2cd815aaba93545c580cfa98ebc4eeb865c3bdf091", null ],
+      [ "ADI_RTC_TRIM_1", "group___r_t_c___driver.html#gga48d4b8b822c13c9c59ef78b2cd815aabad2d2198a07373f8b25f61b6203da42d5", null ],
+      [ "ADI_RTC_TRIM_2", "group___r_t_c___driver.html#gga48d4b8b822c13c9c59ef78b2cd815aabaf1820e264e1a968d0a119b3a3a3c9a5f", null ],
+      [ "ADI_RTC_TRIM_3", "group___r_t_c___driver.html#gga48d4b8b822c13c9c59ef78b2cd815aaba3ecbbb05275e09bb42035e9ab5ddcc3a", null ],
+      [ "ADI_RTC_TRIM_4", "group___r_t_c___driver.html#gga48d4b8b822c13c9c59ef78b2cd815aaba80b386011a8b29f72b4261e35a5a177a", null ],
+      [ "ADI_RTC_TRIM_5", "group___r_t_c___driver.html#gga48d4b8b822c13c9c59ef78b2cd815aaba9860acd492d20968e4b0fb92009ebcf3", null ],
+      [ "ADI_RTC_TRIM_6", "group___r_t_c___driver.html#gga48d4b8b822c13c9c59ef78b2cd815aabac3450c490e2b4387c7d92d8d0a726d19", null ],
+      [ "ADI_RTC_TRIM_7", "group___r_t_c___driver.html#gga48d4b8b822c13c9c59ef78b2cd815aabac92e8b358414a5f124af3d71ec6fffcf", null ]
+    ] ],
+    [ "ADI_RTC_WRITE_ERROR_TYPE", "group___r_t_c___driver.html#gac5519c16277528b3a5801d990e6262f8", [
+      [ "ADI_RTC_WRITE_ERROR_CONTROL", "group___r_t_c___driver.html#ggac5519c16277528b3a5801d990e6262f8a6b6772919cbd8b14931060d967bdbedb", null ],
+      [ "ADI_RTC_WRITE_ERROR_STATUS0", "group___r_t_c___driver.html#ggac5519c16277528b3a5801d990e6262f8adb4121cfb8ad0f08c773da321b8e9468", null ],
+      [ "ADI_RTC_WRITE_ERROR_COUNT0", "group___r_t_c___driver.html#ggac5519c16277528b3a5801d990e6262f8a01611fcf0fc9792ff6623da2bb392b75", null ],
+      [ "ADI_RTC_WRITE_ERROR_COUNT1", "group___r_t_c___driver.html#ggac5519c16277528b3a5801d990e6262f8a545afa5e9e2e8979788cb043dc4ae600", null ],
+      [ "ADI_RTC_WRITE_ERROR_ALARM0", "group___r_t_c___driver.html#ggac5519c16277528b3a5801d990e6262f8a873d8e264afe888e5489d9f252db10b9", null ],
+      [ "ADI_RTC_WRITE_ERROR_ALARM1", "group___r_t_c___driver.html#ggac5519c16277528b3a5801d990e6262f8a455e7766fd190d37cbd2aa5e397998ad", null ],
+      [ "ADI_RTC_WRITE_ERROR_TRIM", "group___r_t_c___driver.html#ggac5519c16277528b3a5801d990e6262f8a7abc4983900bf898cd1734ef4d682720", null ],
+      [ "ADI_RTC_WRITE_ERROR_NONE", "group___r_t_c___driver.html#ggac5519c16277528b3a5801d990e6262f8ab5aa81eee1fc70d6acd9345849955897", null ]
+    ] ],
+    [ "ADI_RTC_WRITE_STATUS_TYPE", "group___r_t_c___driver.html#ga0a32e1e3999569e17cd74caac3f299cf", [
+      [ "ADI_RTC_WRITE_STATUS_TRIM", "group___r_t_c___driver.html#gga0a32e1e3999569e17cd74caac3f299cfad6bfd1e79caabb40476b242491a41f64", null ],
+      [ "ADI_RTC_WRITE_STATUS_ALARM1", "group___r_t_c___driver.html#gga0a32e1e3999569e17cd74caac3f299cfaf9c0a9aeb3fccaa7256bf16be2536256", null ],
+      [ "ADI_RTC_WRITE_STATUS_ALARM0", "group___r_t_c___driver.html#gga0a32e1e3999569e17cd74caac3f299cfa5b753950b1ebe645090aeecb778cceac", null ],
+      [ "ADI_RTC_WRITE_STATUS_COUNT1", "group___r_t_c___driver.html#gga0a32e1e3999569e17cd74caac3f299cfa52ca83ba9970d00d49a80f94febdd3e2", null ],
+      [ "ADI_RTC_WRITE_STATUS_COUNT0", "group___r_t_c___driver.html#gga0a32e1e3999569e17cd74caac3f299cfa9371bae85fc45db12e97f8238d7a3c64", null ],
+      [ "ADI_RTC_WRITE_STATUS_STATUS0", "group___r_t_c___driver.html#gga0a32e1e3999569e17cd74caac3f299cfaa2e2c58b35f9b18e8d3f4c73787881e6", null ],
+      [ "ADI_RTC_WRITE_STATUS_CONTROL", "group___r_t_c___driver.html#gga0a32e1e3999569e17cd74caac3f299cfaad2ea7ba3b046b801ea1bfdc75004a1a", null ]
+    ] ],
+    [ "ADI_INT_HANDLER", "group___r_t_c___driver.html#ga1f5ac1f5ac3ee244269b290134757611", null ],
+    [ "adi_RTC_ClearInterruptStatus", "group___r_t_c___driver.html#gacca45fc8db572456b08083fa5ebef039", null ],
+    [ "adi_RTC_EnableAlarm", "group___r_t_c___driver.html#ga8df81a1e85e1fec8e7efecdbf8fb2153", null ],
+    [ "adi_RTC_EnableDevice", "group___r_t_c___driver.html#gadef1c0ba610d2cc134e22946eebe2415", null ],
+    [ "adi_RTC_EnableInterrupts", "group___r_t_c___driver.html#ga84743ff4642b0dc22bd4df713e016beb", null ],
+    [ "adi_RTC_EnableLcdUpdate", "group___r_t_c___driver.html#ga8c97cb66e87b4723e759b8a754064a60", null ],
+    [ "adi_RTC_EnableSafeWrites", "group___r_t_c___driver.html#gaf0aaaf5a929858047376064ef65a94d3", null ],
+    [ "adi_RTC_EnableTrim", "group___r_t_c___driver.html#gaeb5e73c9288bbb530ef1f65b6c5a20f4", null ],
+    [ "adi_RTC_GetAlarm", "group___r_t_c___driver.html#ga3d46dbaee54a74fac3755fed9a8e23c2", null ],
+    [ "adi_RTC_GetControl", "group___r_t_c___driver.html#gad82c0de18fbee9363536bc814fab45c5", null ],
+    [ "adi_RTC_GetCount", "group___r_t_c___driver.html#ga2aa6460f727bd8329a15f6067bc3d6b2", null ],
+    [ "adi_RTC_GetInterruptStatus", "group___r_t_c___driver.html#ga313d4536c52fb763eddda24d8f6dcf33", null ],
+    [ "adi_RTC_GetLcdUpdate", "group___r_t_c___driver.html#ga62a12284dfcc066921018615c7bea5d9", null ],
+    [ "adi_RTC_GetTrim", "group___r_t_c___driver.html#ga9b2f6633404e42ccf2f84c4b3bb7454f", null ],
+    [ "adi_RTC_GetWriteErrorSource", "group___r_t_c___driver.html#ga400bfce28312110ab2833d5f24435a55", null ],
+    [ "adi_RTC_GetWritePendStatus", "group___r_t_c___driver.html#gaf3cec8adc3a12229f59277b293f4382d", null ],
+    [ "adi_RTC_GetWriteSyncStatus", "group___r_t_c___driver.html#ga27f96897d61ce9677e9157a9fb3c64f0", null ],
+    [ "adi_RTC_Init", "group___r_t_c___driver.html#gaef27bd8be751e506676badd6478a4728", null ],
+    [ "adi_RTC_RegisterCallback", "group___r_t_c___driver.html#gaaa40cc4ad7659e7ca439073af63d7b3a", null ],
+    [ "adi_RTC_SetAlarm", "group___r_t_c___driver.html#ga4d4a10bd750e482a60287ce6be5c9933", null ],
+    [ "adi_RTC_SetControl", "group___r_t_c___driver.html#ga7e3a225e0f051fd6730b2363bf4c7acb", null ],
+    [ "adi_RTC_SetCount", "group___r_t_c___driver.html#ga6ccc9f2af7d03676e05911bd22454d2a", null ],
+    [ "adi_RTC_SetGateway", "group___r_t_c___driver.html#ga71d7a63f43b49d49d4335b8f1d6a570c", null ],
+    [ "adi_RTC_SetLcdUpdate", "group___r_t_c___driver.html#ga9b2c1b0241bec13263f3840de6ea2147", null ],
+    [ "adi_RTC_SetTrim", "group___r_t_c___driver.html#ga577b1f44366e3dffd5aae0a6763124f8", null ],
+    [ "adi_RTC_SynchronizeAllWrites", "group___r_t_c___driver.html#ga0fa487b597196c21ea361c6ed2a711b7", null ],
+    [ "adi_RTC_UnInit", "group___r_t_c___driver.html#ga1bd6e198f7f51c6469672cd7e4ba163d", null ],
+    [ "gRTC_DevData", "group___r_t_c___driver.html#ga4926f9f86954b6a55689804476231ad6", null ]
+];

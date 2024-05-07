@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<workspace>
+  <project>
+    <path>$WS_DIR$\..\..\AfeCustomInterrupt\iar\AfeCustomInterrupt.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\..\..\AfeTest\iar\afeTest.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\..\..\AmperometricMeasurement\iar\AmperometricMeasurement.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\..\..\AuxChanMeasurement\iar\AuxChanMeasurement.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\..\..\ImpedanceMeasurement_2Wire\iar\ImpedanceMeasurement_2Wire.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\..\..\ImpedanceMeasurement_4WireBioIsolated\iar\ImpedanceMeasurement_4WireBioIsolated.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\..\..\UnipolarCurrentMeasurement\iar\UnipolarCurrentMeasurement.ewp</path>
+  </project>
+  <batchBuild/>
+</workspace>

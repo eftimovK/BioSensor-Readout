@@ -1,0 +1,57 @@
+;==========================================================
+;
+;  Micrium, Inc.
+;
+;
+;  USB to Serial Driver
+;
+;  Note(s): (1) See msdn.microsoft.com/en-us/library/ff549520.aspx
+;               for more details about INF file and directives.
+;
+;           (2) This GUID value specifies the device setup class subkey
+;               in the registry HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Class
+;               tree under which to write registry information for the drivers
+;               of devices that are installed from this INF file. The class key
+;               contains for example information about how to present the device
+;               in the Device manager (e.g icon used, class group).
+;==========================================================
+
+; =================== Version section =====================
+[Version]
+Signature = "$Windows NT$"                                      ; INF file valid for all Windows operating systems.
+Class     = Ports                                               ; Name of the device setup class for serial and parallel port devices.
+ClassGuid = {4D36E978-E325-11CE-BFC1-08002BE10318}              ; Device setup class GUID (see Note #2)
+
+Provider=%ProviderName%                                         ; Identify the provider of the INF file.
+DriverVer = 12/12/2011,1.0.0.1                                  ; Driver version
+CatalogFile=usbser.cat
+
+
+[MANUFACTURER]
+%ProviderName% = DeviceList, NTx86, NTamd64
+
+[DeviceList.NTx86]
+%PROVIDER_CDC% = DriverInstall, USB\VID_064B&PID_7824&MI_00
+
+[DeviceList.NTamd64]
+%PROVIDER_CDC% = DriverInstall, USB\VID_064B&PID_7824&MI_00
+
+; ================ Installation sections ==================
+
+[DriverInstall]
+include   = mdmcpq.inf
+CopyFiles = FakeModemCopyFileSection
+AddReg    = LowerFilterAddReg,SerialPropPageAddReg
+
+[DriverInstall.Services]
+include    = mdmcpq.inf
+AddService = usbser, 0x00000002, LowerFilter_Service_Inst
+
+[SerialPropPageAddReg]
+HKR,,EnumPropPages32,,"MsPorts.dll,SerialPortPropPageProvider"
+
+; ======================== Strings ========================
+[Strings]
+ProviderName            = "Analog Devices Inc."
+PROVIDER_CDC            = "ADI/Micrium USB Virtual COM Device (CDC/ACM)"
+; ======================== END ============================
