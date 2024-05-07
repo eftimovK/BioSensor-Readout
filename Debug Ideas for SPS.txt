@@ -1,0 +1,14 @@
+dma limitation ?? up to 1.7kHz only
+--> the sprintf() causes the limitation...? 
+    if commented out, all dma cycles get completed, but dmaRxRemaining is max ~64000 (16bit); why though?
+
+on the other hand, if we allow a wait command in the sequencer after the measurement, all dma cycles can be
+successfully transfered; but where do the values come from? are these the values that the ADC outputs
+during the waiting? (and thus represent only noise)
+
+
+check where system clock is set
+debug where a single transfer takes place
+does the wrong crc code make a difference?
+
+
