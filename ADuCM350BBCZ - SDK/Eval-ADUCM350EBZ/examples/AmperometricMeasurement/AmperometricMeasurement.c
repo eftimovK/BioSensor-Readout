@@ -45,9 +45,9 @@ License Agreement.
 /* DC Level 2 voltage in mV (range: -0.8V to 0.8V) */
 #define VL2                         (300)
 /* The duration (in us) of DC Level 1 voltage */
-#define DURL1                       ((uint32_t)(2500000))
+#define DURL1                       ((uint32_t)(1500000))
 /* The duration (in us) of DC Level 2 voltage */
-#define DURL2                       ((uint32_t)(2500000))
+#define DURL2                       ((uint32_t)(1500000))
 /* The duration (in us) which the IVS switch should remain closed (to shunt */
 /* switching current) before changing the DC level.                         */
 #define DURIVS1                     ((uint32_t)(100))
@@ -74,7 +74,7 @@ License Agreement.
 /* DO NOT EDIT: Number of samples to be transferred by DMA, based on the duration of */
 /* the sequence.                                                                     */
 /* SAMPLE_COUNT = (Level 1 Duration + Level 2 Duration)us * (160k/178)samples/s      */
-#define SAMPLE_COUNT                (uint32_t)((2 * (DURL1 + DURL2)) / 2225)
+#define SAMPLE_COUNT                (uint32_t)(7500) // OLD VALUE: (uint32_t)((2 * (DURL1 + DURL2)) / 2225)
 
 /* Size limit for each DMA transfer (max 1024) */
 #define DMA_BUFFER_SIZE             (300u)
@@ -85,10 +85,16 @@ License Agreement.
 #pragma location="volatile_ram"
 uint16_t        dmaBuffer[DMA_BUFFER_SIZE * 2];
 
+
+#pragma location="volatile_ram"
+uint16_t        adc[SAMPLE_COUNT];
+
+uint16_t adc_count = 0;
+
 /* Sequence for Amperometric measurement */
 uint32_t seq_afe_ampmeas[] = {
     0x00150065,   /*  0 - Safety Word, Command Count = 15, CRC = 0x1C                                       */
-    0x84007818,   /*  1 - AFE_FIFO_CFG: DATA_FIFO_SOURCE_SEL = 0b11 (LPF)                                   */
+    0x84003818, // DATA_FIFO_SOURCE_SEL = 0b01 (ADC); OLD CODE: 0x84007818,   /*  1 - AFE_FIFO_CFG: DATA_FIFO_SOURCE_SEL = 0b11 (LPF)                                   */
     0x8A000030,   /*  2 - AFE_WG_CFG: TYPE_SEL = 0b00                                                       */
     0x88000F00,   /*  3 - AFE_DAC_CFG: DAC_ATTEN_EN = 0 (disable DAC attenuator)                            */
     0xAA000800,   /*  4 - AFE_WG_DAC_CODE: DAC_CODE = 0x800 (DAC Level 1 placeholder, user programmable)    */
@@ -272,6 +278,16 @@ int main(void) {
     {
         FAIL("adi_AFE_UnInit");
     }
+        
+    // EDIT: send data to serial port after measurement
+    int16_t i;
+    char                    msg[MSG_MAXLEN];
+    
+    for (i=0; i < SAMPLE_COUNT; i++)
+    {
+      sprintf(msg, "%u\r\n", adc[i]);
+      PRINT(msg);
+    }
     
     /* Uninitialize the UART */
     adi_UART_UnInit(hUartDevice);
@@ -302,8 +318,10 @@ void RxDmaCB(void *hAfeDevice, uint32_t length, void *pBuffer)
     {
         for (i = 0; i < length; i++)
         {
-            sprintf(msg, "%u\r\n", *ppBuffer++);
-            PRINT(msg);
+//            sprintf(msg, "%u\r\n", *ppBuffer++);
+//            PRINT(msg);
+            adc[adc_count] = *ppBuffer++;
+            adc_count++;            
     }
     }
 
