@@ -77,7 +77,7 @@ ADI_AFE_DEV_DATA_TYPE AFE_DevData;                                  /*!< Private
 
 /* internal device data pointers */
 static ADI_AFE_DEV_DATA_TYPE* const pAFE_DevData = &AFE_DevData;    /*!< Pointer to private AFE device instance data        */
-static uint8_t dmaSkipCount = 64;   // decimation factor, calculated according to the equation:
+static uint8_t dmaSkipCount = 63;   // decimation factor, calculated according to the equation:
                                     // ADC_SPS / dmaSkipCount * DURATION = SAMPLE_COUNT
 
 static ADI_DMA_TRANSFER_TYPE            gDmaDescriptorForAFETx;
@@ -1199,8 +1199,17 @@ ADI_AFE_RESULT_TYPE adi_AFE_SeqInit(ADI_AFE_DEV_HANDLE const hDevice, const uint
             /* Multiple DMA cycles */
             adi_AFE_ProgramRxDMA(hDevice, &rxBuffer[0], hDevice->dmaRxBufferMaxSize[0]);
 
-            hDevice->dmaRxRemaining = size - hDevice->dmaRxBufferMaxSize[0];
             hDevice->dmaRxBufferIndex = 0;
+            if (dmaSkipCount > 0)   // true if we are using decimation
+            {
+                // reset number of remaining dma transfers
+                hDevice->dmaRxRemaining = size;
+                dmaSkipCount--;
+            }
+            else    // no decimation
+            {
+                hDevice->dmaRxRemaining = size - hDevice->dmaRxBufferMaxSize[0];
+            }
         }
 #else
         /* Single DMA cycle */
@@ -3137,7 +3146,7 @@ ADI_INT_HANDLER(DMA_AFE_RX_Int_Handler) {
         }
         else // counter reached 0 => we do not ignore the next dma transfer
         {
-            dmaSkipCount = 64; // reset to the original value
+            dmaSkipCount = 63; // reset to the original value
         }
     }
     else 
@@ -3182,11 +3191,8 @@ ADI_INT_HANDLER(DMA_AFE_RX_Int_Handler) {
     /* Callback */
     if (hDevice->cbRxDmaFcn) 
     {
-        if (dmaSkipCount == 64)  // execute callback only for the dma transfer we did not ignore
-        {
-            /* Pass values that can used to keep track of the transfers in dual buffer Rx DMA mode */
-            hDevice->cbRxDmaFcn(hDevice, currentLength, (void *)pCurrentBuffer);
-        }
+        /* Pass values that can used to keep track of the transfers in dual buffer Rx DMA mode */
+        hDevice->cbRxDmaFcn(hDevice, currentLength, (void *)pCurrentBuffer);
     }
 }
 
