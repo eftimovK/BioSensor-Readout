@@ -37,6 +37,9 @@ typedef struct ADI_AFE_DEV_DATA_TYPE {
     uint32_t                            rcal;                       /*!< RCAL value in ohms                                 */
     uint32_t                            rtia;                       /*!< RTIA value in ohms                                 */
     
+    /* Variables for downsampling the data */
+    uint8_t                             decFactor;                  /*!< Decimation (or downsampling) factor                */
+    uint16_t                            samplesInBuffer;            /*!< =: (dmaRxBufferMaxSize / decFactor)                */
 
 #if (ADI_CFG_ENABLE_RTOS_SUPPORT == 1)
     /* Memory required to create the semaphore */
@@ -77,8 +80,6 @@ ADI_AFE_DEV_DATA_TYPE AFE_DevData;                                  /*!< Private
 
 /* internal device data pointers */
 static ADI_AFE_DEV_DATA_TYPE* const pAFE_DevData = &AFE_DevData;    /*!< Pointer to private AFE device instance data        */
-static uint8_t dmaSkipCount = 63;   // decimation factor, calculated according to the equation:
-                                    // ADC_SPS / dmaSkipCount * DURATION = SAMPLE_COUNT
 
 static ADI_DMA_TRANSFER_TYPE            gDmaDescriptorForAFETx;
 static ADI_DMA_TRANSFER_TYPE            gDmaDescriptorForAFERx;
@@ -1189,9 +1190,9 @@ ADI_AFE_RESULT_TYPE adi_AFE_SeqInit(ADI_AFE_DEV_HANDLE const hDevice, const uint
         hDevice->pRxBuffer = rxBuffer;
 
 #if (ADI_AFE_CFG_ENABLE_RX_DMA_DUAL_BUFFER_SUPPORT == 1)
-        if (size <= hDevice->dmaRxBufferMaxSize[0]) {
+        if (size <= (uint16_t)(hDevice->dmaRxBufferMaxSize[0] / hDevice->decFactor) ) {
             /* Single DMA cycle */
-            adi_AFE_ProgramRxDMA(hDevice, &rxBuffer[0], size);
+            adi_AFE_ProgramRxDMA(hDevice, &rxBuffer[0], size*hDevice->decFactor);
 
             hDevice->dmaRxRemaining = 0;
         }
@@ -1199,17 +1200,8 @@ ADI_AFE_RESULT_TYPE adi_AFE_SeqInit(ADI_AFE_DEV_HANDLE const hDevice, const uint
             /* Multiple DMA cycles */
             adi_AFE_ProgramRxDMA(hDevice, &rxBuffer[0], hDevice->dmaRxBufferMaxSize[0]);
 
+            hDevice->dmaRxRemaining = size - (uint16_t)(hDevice->dmaRxBufferMaxSize[0] / hDevice->decFactor);
             hDevice->dmaRxBufferIndex = 0;
-            if (dmaSkipCount > 0)   // true if we are using decimation
-            {
-                // reset number of remaining dma transfers
-                hDevice->dmaRxRemaining = size;
-                dmaSkipCount--;
-            }
-            else    // no decimation
-            {
-                hDevice->dmaRxRemaining = size - hDevice->dmaRxBufferMaxSize[0];
-            }
         }
 #else
         /* Single DMA cycle */
@@ -1943,6 +1935,40 @@ ADI_AFE_RESULT_TYPE adi_AFE_GetRtia(ADI_AFE_DEV_HANDLE const hDevice, uint32_t* 
     return ADI_AFE_SUCCESS;
 }
 
+/*!
+ * @brief       Set the decimation (downsampling) factor of the data output rate.
+ *
+ * @param       hDevice                                 Device handle obtained from adi_AFE_Init().
+ *              decfactor                               Decimation factor.
+ *
+ *
+ * @return      Status
+ *              - #ADI_AFE_SUCCESS                      Call completed successfully.
+ *              - #ADI_AFE_ERR_BAD_DEV_HANDLE           Invalid device handle.
+ *              - #ADI_AFE_ERR_NOT_INITIALIZED          Device not initialized.
+ *
+ * @details     The maximum data output rate is 160ksps, when the ADC is chosen from the DATA_FIFO_SOURCE_SEL bits. 
+ *              To downsample this data rate, a group of values in the buffer are averaged, whose size is determined by the decimation factor.
+ *
+ */
+
+ADI_AFE_RESULT_TYPE adi_AFE_SetDecFactor(ADI_AFE_DEV_HANDLE const hDevice, uint8_t decFactor) {
+
+#ifdef ADI_DEBUG
+    if (adi_AFE_InvalidHandle(hDevice)) {
+        return ADI_AFE_ERR_BAD_DEV_HANDLE;
+    }
+
+    if (adi_AFE_HandleNotInitialized(hDevice)) {
+        return ADI_AFE_ERR_NOT_INITIALIZED;
+    }
+#endif
+
+    hDevice->decFactor = decFactor;
+    
+    return ADI_AFE_SUCCESS;    
+}
+
 
 /***************************************************************************/
 /*   High-Level Functions                                                  */
@@ -2478,6 +2504,7 @@ ADI_AFE_RESULT_TYPE adi_AFE_Init(ADI_AFE_DEV_HANDLE* const phDevice) {
     hDevice->dmaRxBufferMaxSize[0] = 1024;
     hDevice->dmaRxBufferMaxSize[1] = 0;
     hDevice->dmaRxRemaining = 0;
+    hDevice->decFactor = 1;     // no decimation is set as default
 #endif
 
     hDevice->pRxBuffer = NULL;
@@ -3082,7 +3109,6 @@ ADI_INT_HANDLER(DMA_AFE_RX_Int_Handler) {
     ADI_AFE_DEV_HANDLE  hDevice = pAFE_DevData;
     uint16_t*           pCurrentBuffer;
     uint16_t            currentLength;
-    uint16_t            currentDmaRxRemaining;
 #if (ADI_AFE_CFG_ENABLE_RX_DMA_DUAL_BUFFER_SUPPORT == 1)   
     static bool_t       bufferInitialized = false;
     static uint16_t*    pNextBuffer;
@@ -3094,7 +3120,6 @@ ADI_INT_HANDLER(DMA_AFE_RX_Int_Handler) {
 #if (ADI_AFE_CFG_ENABLE_RX_DMA_DUAL_BUFFER_SUPPORT == 1)      
     if (hDevice->dmaRxRemaining) 
     {
-        currentDmaRxRemaining = hDevice->dmaRxRemaining;    // save to later reset the number of DMA transfers remaining
         /* More DMA cycles needed */
         if (hDevice->dmaRxBufferIndex) 
         {
@@ -3102,15 +3127,15 @@ ADI_INT_HANDLER(DMA_AFE_RX_Int_Handler) {
             pCurrentBuffer  = hDevice->pRxBuffer + hDevice->dmaRxBufferMaxSize[0];
             pNextBuffer     = hDevice->pRxBuffer;
 
-            if (hDevice->dmaRxRemaining <= hDevice->dmaRxBufferMaxSize[0]) 
+            if (hDevice->dmaRxRemaining <= (uint16_t)(hDevice->dmaRxBufferMaxSize[0] / hDevice->decFactor) ) 
             {
-                nextLength              = hDevice->dmaRxRemaining;
+                nextLength              = hDevice->dmaRxRemaining * hDevice->decFactor;     // final buffer size
                 hDevice->dmaRxRemaining = 0;
             }
             else 
             {
                 nextLength = hDevice->dmaRxBufferMaxSize[0];
-                hDevice->dmaRxRemaining = hDevice->dmaRxRemaining - hDevice->dmaRxBufferMaxSize[0];
+                hDevice->dmaRxRemaining = hDevice->dmaRxRemaining - (uint16_t)(hDevice->dmaRxBufferMaxSize[0] / hDevice->decFactor);    // decrease by the number of samples
             }
 
             hDevice->dmaRxBufferIndex = 0;
@@ -3121,15 +3146,15 @@ ADI_INT_HANDLER(DMA_AFE_RX_Int_Handler) {
             pCurrentBuffer  = hDevice->pRxBuffer;
             pNextBuffer     = hDevice->pRxBuffer + hDevice->dmaRxBufferMaxSize[0];
 
-            if (hDevice->dmaRxRemaining <= hDevice->dmaRxBufferMaxSize[1]) 
+            if (hDevice->dmaRxRemaining <= (uint16_t)(hDevice->dmaRxBufferMaxSize[1] / hDevice->decFactor) ) 
             {
-                nextLength              = hDevice->dmaRxRemaining;
+                nextLength              = hDevice->dmaRxRemaining * hDevice->decFactor;     // final buffer size
                 hDevice->dmaRxRemaining = 0;
             }
             else 
             {
                 nextLength = hDevice->dmaRxBufferMaxSize[1];
-                hDevice->dmaRxRemaining = hDevice->dmaRxRemaining - hDevice->dmaRxBufferMaxSize[1];
+                hDevice->dmaRxRemaining = hDevice->dmaRxRemaining - (uint16_t)(hDevice->dmaRxBufferMaxSize[1] / hDevice->decFactor);    // decrease by the number of samples
             }
 
             hDevice->dmaRxBufferIndex = hDevice->dmaRxBufferMaxSize[1];
@@ -3138,16 +3163,6 @@ ADI_INT_HANDLER(DMA_AFE_RX_Int_Handler) {
         adi_AFE_ProgramRxDMA(hDevice, pNextBuffer, nextLength);
         bufferInitialized = true;
 
-        if (dmaSkipCount > 0)
-        {
-            // reset number of remaining dma transfers
-            hDevice->dmaRxRemaining = currentDmaRxRemaining;
-            dmaSkipCount--;
-        }
-        else // counter reached 0 => we do not ignore the next dma transfer
-        {
-            dmaSkipCount = 63; // reset to the original value
-        }
     }
     else 
     {
