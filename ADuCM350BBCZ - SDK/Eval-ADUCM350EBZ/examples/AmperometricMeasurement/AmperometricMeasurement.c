@@ -71,13 +71,15 @@ License Agreement.
 /* DO NOT EDIT: DC Level 2 in DAC codes */
 #define DACL2                       ((uint32_t)(((float)VL2 / (float)DAC_LSB_SIZE) + 0x800))
 
+#define DECIMATION                  (uint8_t)(50)  // decimation (downsampling) factor
+
 /* DO NOT EDIT: Number of samples to be transferred by DMA, based on the duration of */
 /* the sequence.                                                                     */
 /* SAMPLE_COUNT = (Level 1 Duration + Level 2 Duration)us * (160k/178)samples/s      */
-#define SAMPLE_COUNT                (uint32_t)(512*14) // OLD VALUE: (uint32_t)((2 * (DURL1 + DURL2)) / 2225)
+#define SAMPLE_COUNT                (uint32_t)(8180) // OLD VALUE: (uint32_t)((2 * (DURL1 + DURL2)) / 2225)
 
 /* Size limit for each DMA transfer (max 1024) */
-#define DMA_BUFFER_SIZE             (512u)
+#define DMA_BUFFER_SIZE             (1000u)  // must be a multiple of DECIMATION!
 
 /* DO NOT EDIT: Maximum printed message length. Used for printing only. */
 #define MSG_MAXLEN                  (50)
@@ -175,6 +177,12 @@ int main(void) {
     if (ADI_AFE_SUCCESS != adi_AFE_SetRtia(hAfeDevice, RTIA))
     {
         FAIL("Set RTIA");
+    }
+    
+    /* Set decimation factor */
+    if (ADI_AFE_SUCCESS != adi_AFE_SetDecFactor(hAfeDevice, DECIMATION))
+    {
+        FAIL("Set decFactor");
     }
 
     /* AFE power up */
@@ -326,13 +334,13 @@ void RxDmaCB(void *hAfeDevice, uint32_t length, void *pBuffer)
 //            PRINT(msg);
             adc_sum = adc_sum + *ppBuffer++;    // add current ADC value
             
-            if (i % 64 == 0 || i == length)
+            if (i % DECIMATION == 0)
             {
-                adc[adc_count] = (uint16_t)(adc_sum / 64);
-            adc_count++;            
+                adc[adc_count] = (uint16_t)(adc_sum / DECIMATION);
+                adc_count++;            
                 adc_sum = 0;
             }
-    }
+        }
     }
 
 #elif (0 == USE_UART_FOR_DATA)
