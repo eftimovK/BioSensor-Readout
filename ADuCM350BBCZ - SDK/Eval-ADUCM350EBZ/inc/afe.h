@@ -203,6 +203,14 @@ typedef struct ADI_AFE_DEV_DATA_TYPE* ADI_AFE_DEV_HANDLE;  /*!< AFE Device insta
 /* - addr[7:2] identifies the MMR for the sequencer,   */
 #define SEQ_MMR_WRITE(addr, data)   (0x80000000 | ((addr & 0xFC) << 23) | data)
 
+/* Helper macro for returning the largest number <= 'value' that is a multiple factor of 'multiple' */
+/* 
+   Details:
+   If buffer size is not a multiple of decimation factor, the decimation does not work properly during DMA transfers.
+   The macro can thus be used to adjust the originally provided buffer size.
+*/
+#define FLOOR_TO_MULTIPLE(value, multiple) (((value) / (multiple)) * (multiple))
+
 extern ADI_AFE_RESULT_TYPE      adi_AFE_Init                            (ADI_AFE_DEV_HANDLE* const      phDevice);
 extern ADI_AFE_RESULT_TYPE      adi_AFE_UnInit                          (ADI_AFE_DEV_HANDLE const       hDevice);
 extern ADI_AFE_RESULT_TYPE      adi_AFE_SetDataFifoSource               (ADI_AFE_DEV_HANDLE const       hDevice,
