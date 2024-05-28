@@ -39,7 +39,7 @@ typedef struct ADI_AFE_DEV_DATA_TYPE {
     
     /* Variables for downsampling the data */
     uint8_t                             decFactor;                  /*!< Decimation (or downsampling) factor                */
-    uint16_t                            samplesInBuffer;            /*!< =: (dmaRxBufferMaxSize / decFactor)                */
+    uint16_t                            samplesInBuffer[2];         /*!< =: (dmaRxBufferMaxSize / decFactor)                */
 
 #if (ADI_CFG_ENABLE_RTOS_SUPPORT == 1)
     /* Memory required to create the semaphore */
@@ -1190,7 +1190,7 @@ ADI_AFE_RESULT_TYPE adi_AFE_SeqInit(ADI_AFE_DEV_HANDLE const hDevice, const uint
         hDevice->pRxBuffer = rxBuffer;
 
 #if (ADI_AFE_CFG_ENABLE_RX_DMA_DUAL_BUFFER_SUPPORT == 1)
-        if (size <= (uint16_t)(hDevice->dmaRxBufferMaxSize[0] / hDevice->decFactor) ) {
+        if (size <= hDevice->samplesInBuffer[0] ) {
             /* Single DMA cycle */
             adi_AFE_ProgramRxDMA(hDevice, &rxBuffer[0], size*hDevice->decFactor);
 
@@ -1200,7 +1200,7 @@ ADI_AFE_RESULT_TYPE adi_AFE_SeqInit(ADI_AFE_DEV_HANDLE const hDevice, const uint
             /* Multiple DMA cycles */
             adi_AFE_ProgramRxDMA(hDevice, &rxBuffer[0], hDevice->dmaRxBufferMaxSize[0]);
 
-            hDevice->dmaRxRemaining = size - (uint16_t)(hDevice->dmaRxBufferMaxSize[0] / hDevice->decFactor);
+            hDevice->dmaRxRemaining = size - hDevice->samplesInBuffer[0];
             hDevice->dmaRxBufferIndex = 0;
         }
 #else
@@ -2399,8 +2399,16 @@ ADI_AFE_RESULT_TYPE adi_AFE_SetDmaRxBufferMaxSize(ADI_AFE_DEV_HANDLE const hDevi
     }
 #endif
 
+    // handle case "Buffer size not a multiple of dec. factor"
+    maxSizeFirst = FLOOR_TO_MULTIPLE(maxSizeFirst, hDevice->decFactor);
+    maxSizeSecond = FLOOR_TO_MULTIPLE(maxSizeSecond, hDevice->decFactor);
+
     hDevice->dmaRxBufferMaxSize[0] = maxSizeFirst;
     hDevice->dmaRxBufferMaxSize[1] = maxSizeSecond;
+
+    // set the number of samples we practically get when decimating
+    hDevice->samplesInBuffer[0] = (uint16_t)(hDevice->dmaRxBufferMaxSize[0] / hDevice->decFactor);
+    hDevice->samplesInBuffer[1] = (uint16_t)(hDevice->dmaRxBufferMaxSize[1] / hDevice->decFactor);
 
     return ADI_AFE_SUCCESS;
 }
@@ -2505,6 +2513,8 @@ ADI_AFE_RESULT_TYPE adi_AFE_Init(ADI_AFE_DEV_HANDLE* const phDevice) {
     hDevice->dmaRxBufferMaxSize[1] = 0;
     hDevice->dmaRxRemaining = 0;
     hDevice->decFactor = 1;     // no decimation is set as default
+    hDevice->samplesInBuffer[0] = (uint16_t)(hDevice->dmaRxBufferMaxSize[0] / hDevice->decFactor);
+    hDevice->samplesInBuffer[1] = (uint16_t)(hDevice->dmaRxBufferMaxSize[1] / hDevice->decFactor);
 #endif
 
     hDevice->pRxBuffer = NULL;
@@ -3127,7 +3137,7 @@ ADI_INT_HANDLER(DMA_AFE_RX_Int_Handler) {
             pCurrentBuffer  = hDevice->pRxBuffer + hDevice->dmaRxBufferMaxSize[0];
             pNextBuffer     = hDevice->pRxBuffer;
 
-            if (hDevice->dmaRxRemaining <= (uint16_t)(hDevice->dmaRxBufferMaxSize[0] / hDevice->decFactor) ) 
+            if (hDevice->dmaRxRemaining <= hDevice->samplesInBuffer[0] ) 
             {
                 nextLength              = hDevice->dmaRxRemaining * hDevice->decFactor;     // final buffer size
                 hDevice->dmaRxRemaining = 0;
@@ -3135,7 +3145,7 @@ ADI_INT_HANDLER(DMA_AFE_RX_Int_Handler) {
             else 
             {
                 nextLength = hDevice->dmaRxBufferMaxSize[0];
-                hDevice->dmaRxRemaining = hDevice->dmaRxRemaining - (uint16_t)(hDevice->dmaRxBufferMaxSize[0] / hDevice->decFactor);    // decrease by the number of samples
+                hDevice->dmaRxRemaining = hDevice->dmaRxRemaining - hDevice->samplesInBuffer[0];    // decrease by the number of samples
             }
 
             hDevice->dmaRxBufferIndex = 0;
@@ -3146,7 +3156,7 @@ ADI_INT_HANDLER(DMA_AFE_RX_Int_Handler) {
             pCurrentBuffer  = hDevice->pRxBuffer;
             pNextBuffer     = hDevice->pRxBuffer + hDevice->dmaRxBufferMaxSize[0];
 
-            if (hDevice->dmaRxRemaining <= (uint16_t)(hDevice->dmaRxBufferMaxSize[1] / hDevice->decFactor) ) 
+            if (hDevice->dmaRxRemaining <= hDevice->samplesInBuffer[1] ) 
             {
                 nextLength              = hDevice->dmaRxRemaining * hDevice->decFactor;     // final buffer size
                 hDevice->dmaRxRemaining = 0;
@@ -3154,7 +3164,7 @@ ADI_INT_HANDLER(DMA_AFE_RX_Int_Handler) {
             else 
             {
                 nextLength = hDevice->dmaRxBufferMaxSize[1];
-                hDevice->dmaRxRemaining = hDevice->dmaRxRemaining - (uint16_t)(hDevice->dmaRxBufferMaxSize[1] / hDevice->decFactor);    // decrease by the number of samples
+                hDevice->dmaRxRemaining = hDevice->dmaRxRemaining - hDevice->samplesInBuffer[1];    // decrease by the number of samples
             }
 
             hDevice->dmaRxBufferIndex = hDevice->dmaRxBufferMaxSize[1];

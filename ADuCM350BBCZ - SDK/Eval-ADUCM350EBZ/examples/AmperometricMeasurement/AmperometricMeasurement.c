@@ -45,9 +45,9 @@ License Agreement.
 /* DC Level 2 voltage in mV (range: -0.8V to 0.8V) */
 #define VL2                         (300)
 /* The duration (in us) of DC Level 1 voltage */
-#define DURL1                       ((uint32_t)(1500000))
+#define DURL1                       ((uint32_t)(1000000))
 /* The duration (in us) of DC Level 2 voltage */
-#define DURL2                       ((uint32_t)(1500000))
+#define DURL2                       ((uint32_t)(3000000))
 /* The duration (in us) which the IVS switch should remain closed (to shunt */
 /* switching current) before changing the DC level.                         */
 #define DURIVS1                     ((uint32_t)(100))
@@ -71,15 +71,15 @@ License Agreement.
 /* DO NOT EDIT: DC Level 2 in DAC codes */
 #define DACL2                       ((uint32_t)(((float)VL2 / (float)DAC_LSB_SIZE) + 0x800))
 
-#define DECIMATION                  (uint8_t)(50)  // decimation (downsampling) factor
+#define DECIMATION                  (uint8_t)(80)  // decimation (downsampling) factor
 
 /* DO NOT EDIT: Number of samples to be transferred by DMA, based on the duration of */
 /* the sequence.                                                                     */
 /* SAMPLE_COUNT = (Level 1 Duration + Level 2 Duration)us * (160k/178)samples/s      */
-#define SAMPLE_COUNT                (uint32_t)(8180) // OLD VALUE: (uint32_t)((2 * (DURL1 + DURL2)) / 2225)
+#define SAMPLE_COUNT                (uint32_t)(8000) // ADC_SPS / DECIMATION * DURATION = max_SAMPLE_COUNT; (ADC_SPS = 160kSPS)
 
 /* Size limit for each DMA transfer (max 1024) */
-#define DMA_BUFFER_SIZE             (1000u)  // must be a multiple of DECIMATION!
+#define DMA_BUFFER_SIZE             (1024u)  // should be a multiple of DECIMATION! else, it gets rounded to the nearest multiple
 
 /* DO NOT EDIT: Maximum printed message length. Used for printing only. */
 #define MSG_MAXLEN                  (50)
@@ -115,7 +115,7 @@ uint32_t seq_afe_ampmeas[] = {
     0x00000000,   /* 17 - Wait: IVS duration 2 (placeholder, user programmable)                             */
     0x86006655,   /* 18 - IVS_STATE = 0 (open IVS switch)                                                   */
     0x00000000,   /* 19 - Wait: (DAC Level 2 duration - IVS duration 2) (placeholder, user programmable)    */
-    0x00000000,   /* 20 - Wait: finish DMA transfers (placeholder, programmed below)                                                                         */
+    0x00000000,   /* 20 - Wait: finish DMA transfers (placeholder, programmed below)                        */
     0x80020EF0,   /* 21 - AFE_CFG: WAVEGEN_EN = 0, ADC_CONV_EN = 0, SUPPLY_LPF_EN = 0                       */
     0x82000002,   /* 22 - AFE_SEQ_CFG: SEQ_EN = 0                                                           */
 };
@@ -232,7 +232,9 @@ int main(void) {
         seq_afe_ampmeas[15] = dur2 * 16;
         seq_afe_ampmeas[17] = dur3 * 16;
         seq_afe_ampmeas[19] = dur4 * 16;
-        seq_afe_ampmeas[20] = 0.05*(DURL1 + DURL2) * 16; // wait 5% of the total measurement duration
+        
+        // If needed, wait before turning off ADC_CONV_EN in the sequencer
+        // seq_afe_ampmeas[20] = 0.05*(DURL1 + DURL2) * 16; // wait 5% of the total measurement duration
                                                          // to make sure the dma transfers are complete
 
     /* Set DAC Level 1 */
@@ -320,25 +322,25 @@ int main(void) {
 void RxDmaCB(void *hAfeDevice, uint32_t length, void *pBuffer)
 {
 #if (1 == USE_UART_FOR_DATA)
-    // char                    msg[MSG_MAXLEN];
     uint32_t                i;
     uint16_t                *ppBuffer = (uint16_t*)pBuffer;
-    float                    adc_sum = 0;
+    uint8_t                 decCounter = 0; // counts to DECIMATION, replaces modulus
+    uint32_t                adc_sum = 0;
 
     /* Check if there are samples to be sent */
     if (length)
     {
         for (i = 1; i <= length; i++)
         {
-//            sprintf(msg, "%u\r\n", *ppBuffer++);
-//            PRINT(msg);
             adc_sum = adc_sum + *ppBuffer++;    // add current ADC value
+            decCounter++;
             
-            if (i % DECIMATION == 0)
+            if (decCounter == DECIMATION)
             {
                 adc[adc_count] = (uint16_t)(adc_sum / DECIMATION);
                 adc_count++;            
                 adc_sum = 0;
+                decCounter = 0;
             }
         }
     }
