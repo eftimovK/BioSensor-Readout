@@ -1,0 +1,9 @@
+The plots are from amperometric measurements of RC circuit when a step voltage is applied. 
+The naming of the files describes the duration, the R and C values, and the output source. 
+Two output sources were used here: 
+
+1) raw ADC (denoted by 160kSPS), subjected to decimation by either skipping dma transfers, or averaging the output values;
+	for example, the file named "4s_11kOhm+1uF---160kSPS_2kHz_avg"
+	uses the raw ADC output, but decimates it to 2kHz by averaging 80 output values in the buffer
+
+2) LPF output; no need to use decimation, since it outputs data at ~900sps
