@@ -270,6 +270,8 @@ extern ADI_AFE_RESULT_TYPE      adi_AFE_GetRtia                         (ADI_AFE
                                                                          uint32_t*                      pRtia);
 extern ADI_AFE_RESULT_TYPE      adi_AFE_SetDecFactor                    (ADI_AFE_DEV_HANDLE const       hDevice, 
                                                                          uint8_t                        decFactor);
+extern ADI_AFE_RESULT_TYPE      adi_AFE_SetIndefiniteMeasurement        (ADI_AFE_DEV_HANDLE const       hDevice, 
+                                                                         bool_t                         indefiniteMeasurement);
 #if (ADI_AFE_CFG_ENABLE_RX_DMA_DUAL_BUFFER_SUPPORT == 1)      
 extern ADI_AFE_RESULT_TYPE      adi_AFE_SetDmaRxBufferMaxSize           (ADI_AFE_DEV_HANDLE const       hDevice,
                                                                          uint16_t                       maxSizeFirst,

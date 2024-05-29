@@ -41,6 +41,8 @@ typedef struct ADI_AFE_DEV_DATA_TYPE {
     uint8_t                             decFactor;                  /*!< Decimation (or downsampling) factor                */
     uint16_t                            samplesInBuffer[2];         /*!< =: (dmaRxBufferMaxSize / decFactor)                */
 
+    bool_t                              indefiniteMeasurement;      /*!< If true, dmaRxRemaining does not get decreased     */
+
 #if (ADI_CFG_ENABLE_RTOS_SUPPORT == 1)
     /* Memory required to create the semaphore */
     uint8_t                             SemMem[ADI_OSAL_MAX_SEM_SIZE_CHAR];
@@ -1195,12 +1197,21 @@ ADI_AFE_RESULT_TYPE adi_AFE_SeqInit(ADI_AFE_DEV_HANDLE const hDevice, const uint
             adi_AFE_ProgramRxDMA(hDevice, &rxBuffer[0], size*hDevice->decFactor);
 
             hDevice->dmaRxRemaining = 0;
+            if (hDevice->indefiniteMeasurement)
+            {
+                hDevice->dmaRxRemaining = size;
+                hDevice->dmaRxBufferIndex = 0;
+            }
         }
         else {
             /* Multiple DMA cycles */
             adi_AFE_ProgramRxDMA(hDevice, &rxBuffer[0], hDevice->dmaRxBufferMaxSize[0]);
 
-            hDevice->dmaRxRemaining = size - hDevice->samplesInBuffer[0];
+            hDevice->dmaRxRemaining = size;
+            if (!hDevice->indefiniteMeasurement)    // do not decrement if indefinite measurement is set
+            { 
+                hDevice->dmaRxRemaining = hDevice->dmaRxRemaining - hDevice->samplesInBuffer[0];
+            }
             hDevice->dmaRxBufferIndex = 0;
         }
 #else
@@ -1969,6 +1980,41 @@ ADI_AFE_RESULT_TYPE adi_AFE_SetDecFactor(ADI_AFE_DEV_HANDLE const hDevice, uint8
     return ADI_AFE_SUCCESS;    
 }
 
+/*!
+ * @brief       Set whether the dma transfers remaining should be decremented.
+ *
+ * @param       hDevice                                 Device handle obtained from adi_AFE_Init().
+ *              indefiniteMeasurement                   True to run dma transfers indefinitely, False to decrement them (normal behaviour).
+ *
+ *
+ * @return      Status
+ *              - #ADI_AFE_SUCCESS                      Call completed successfully.
+ *              - #ADI_AFE_ERR_BAD_DEV_HANDLE           Invalid device handle.
+ *              - #ADI_AFE_ERR_NOT_INITIALIZED          Device not initialized.
+ *
+ * @details     The motivation was to be able to do real-time data transfer but not for a fixed amount of time. 
+ *              An indefinite measurement time is performed if the dmaRxRemaining does not get decremented. 
+ *              When the sequence comes to an end, WAVEGEN_EN and ADC_CONV_EN must remain enabled, in order to (indefinitely) measure further !
+ *
+ */
+
+ADI_AFE_RESULT_TYPE adi_AFE_SetIndefiniteMeasurement(ADI_AFE_DEV_HANDLE const hDevice, bool_t indefiniteMeasurement) {
+
+#ifdef ADI_DEBUG
+    if (adi_AFE_InvalidHandle(hDevice)) {
+        return ADI_AFE_ERR_BAD_DEV_HANDLE;
+    }
+
+    if (adi_AFE_HandleNotInitialized(hDevice)) {
+        return ADI_AFE_ERR_NOT_INITIALIZED;
+    }
+#endif
+
+    hDevice->indefiniteMeasurement = indefiniteMeasurement;
+    
+    return ADI_AFE_SUCCESS;    
+}
+
 
 /***************************************************************************/
 /*   High-Level Functions                                                  */
@@ -2512,6 +2558,7 @@ ADI_AFE_RESULT_TYPE adi_AFE_Init(ADI_AFE_DEV_HANDLE* const phDevice) {
     hDevice->dmaRxBufferMaxSize[0] = 1024;
     hDevice->dmaRxBufferMaxSize[1] = 0;
     hDevice->dmaRxRemaining = 0;
+    hDevice->indefiniteMeasurement = 0;
     hDevice->decFactor = 1;     // no decimation is set as default
     hDevice->samplesInBuffer[0] = (uint16_t)(hDevice->dmaRxBufferMaxSize[0] / hDevice->decFactor);
     hDevice->samplesInBuffer[1] = (uint16_t)(hDevice->dmaRxBufferMaxSize[1] / hDevice->decFactor);
@@ -3119,6 +3166,7 @@ ADI_INT_HANDLER(DMA_AFE_RX_Int_Handler) {
     ADI_AFE_DEV_HANDLE  hDevice = pAFE_DevData;
     uint16_t*           pCurrentBuffer;
     uint16_t            currentLength;
+    uint16_t            currentDmaRxRemaining;
 #if (ADI_AFE_CFG_ENABLE_RX_DMA_DUAL_BUFFER_SUPPORT == 1)   
     static bool_t       bufferInitialized = false;
     static uint16_t*    pNextBuffer;
@@ -3130,6 +3178,8 @@ ADI_INT_HANDLER(DMA_AFE_RX_Int_Handler) {
 #if (ADI_AFE_CFG_ENABLE_RX_DMA_DUAL_BUFFER_SUPPORT == 1)      
     if (hDevice->dmaRxRemaining) 
     {
+        currentDmaRxRemaining = hDevice->dmaRxRemaining;    // needed if we reset the number of DMA transfers remaining
+
         /* More DMA cycles needed */
         if (hDevice->dmaRxBufferIndex) 
         {
@@ -3168,6 +3218,10 @@ ADI_INT_HANDLER(DMA_AFE_RX_Int_Handler) {
             }
 
             hDevice->dmaRxBufferIndex = hDevice->dmaRxBufferMaxSize[1];
+        }
+        if (hDevice->indefiniteMeasurement) // do not count the dma transfer in case of indefinite measurement
+        {
+            hDevice->dmaRxRemaining = currentDmaRxRemaining;
         }
 
         adi_AFE_ProgramRxDMA(hDevice, pNextBuffer, nextLength);
