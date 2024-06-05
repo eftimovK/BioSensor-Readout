@@ -45,9 +45,9 @@ License Agreement.
 /* DC Level 2 voltage in mV (range: -0.8V to 0.8V) */
 #define VL2                         (300)
 /* The duration (in us) of DC Level 1 voltage */
-#define DURL1                       ((uint32_t)(3000000))
+#define DURL1                       ((uint32_t)(2000000))
 /* The duration (in us) of DC Level 2 voltage */
-#define DURL2                       ((uint32_t)(19000000))
+#define DURL2                       ((uint32_t)(2000000))
 /* The duration (in us) which the IVS switch should remain closed (to shunt */
 /* switching current) before changing the DC level.                         */
 #define DURIVS1                     ((uint32_t)(100))
@@ -73,8 +73,8 @@ License Agreement.
 
 
 /* Set decimation (downsampling) factor and whether to run dma transfers indefinitely */
-#define DECIMATION                  (uint8_t)(130)
-#define CONTINUOUS_MEASUREMENT      (bool_t)(0)
+#define DECIMATION                  (uint8_t)(160)
+#define CONTINUOUS_MEASUREMENT      (bool_t)(1)
 
 /* Set codes for commands that are received through UART (e.g. by a GUI)              */
 #define CMD_START   1
@@ -83,7 +83,7 @@ License Agreement.
 #define CMD_ABORT  -1
 
 /* Number of samples to be transferred by DMA, based on the duration of the sequence. */
-#define SAMPLE_COUNT                (uint32_t)(27071) // ADC_SPS / DECIMATION * DURATION = max_SAMPLE_COUNT; (ADC_SPS = 160kSPS)
+#define SAMPLE_COUNT                (uint32_t)(4000) // ADC_SPS / DECIMATION * DURATION = max_SAMPLE_COUNT; (ADC_SPS = 160kSPS)
 
 /* Size limit for each DMA transfer (max 1024) */
 #define DMA_BUFFER_SIZE             (1024u)  // should be a multiple of DECIMATION! else, it gets rounded to the nearest multiple
@@ -99,7 +99,7 @@ uint16_t        adc[SAMPLE_COUNT];
 
 /* Sequence for Amperometric measurement */
 uint32_t seq_afe_ampmeas[] = {
-    0x00160065,   /*  0 - Safety Word, Command Count = 15, CRC = 0x1C                                       */  // adjust command count accordingly!
+    0x00150065,   /*  0 - Safety Word, Command Count = 15, CRC = 0x1C                                       */  // adjust command count accordingly!
     0x84003818,   /* 1 - AFE_FIFO_CFG: DATA_FIFO_SOURCE_SEL = 0b01 (ADC)                                    */
     0x8A000030,   /*  2 - AFE_WG_CFG: TYPE_SEL = 0b00                                                       */
     0x88000F00,   /*  3 - AFE_DAC_CFG: DAC_ATTEN_EN = 0 (disable DAC attenuator)                            */
@@ -120,7 +120,7 @@ uint32_t seq_afe_ampmeas[] = {
     0x86006655,   /* 18 - IVS_STATE = 0 (open IVS switch)                                                   */
     0x00000000,   /* 19 - Wait: (DAC Level 2 duration - IVS duration 2) (placeholder, user programmable)    */
     0x00000000,   /* 20 - Wait: finish DMA transfers (placeholder, programmed below)                        */
-    0x80020EF0,   /* 21 - AFE_CFG: WAVEGEN_EN = 0, ADC_CONV_EN = 0, SUPPLY_LPF_EN = 0                       */   // comment out, adjust command count above, and set CONTINUOUS_MEASUREMENT=1 to run indefinitely
+//    0x80020EF0,   /* 21 - AFE_CFG: WAVEGEN_EN = 0, ADC_CONV_EN = 0, SUPPLY_LPF_EN = 0                       */   // comment out, adjust command count above, and set CONTINUOUS_MEASUREMENT=1 to run indefinitely
     0x82000002,   /* 22 - AFE_SEQ_CFG: SEQ_EN = 0                                                           */
 };
 
@@ -167,11 +167,20 @@ int main(void)
     }
 
     
-    // while(!stopProgram)
-    // {
-        // wait and read for a cmd
+    while(!stopProgram)
+    {
+        /* Read one character */
+        int16_t rxSize = 1;
+        int8_t cmdRx[1];   // buffer for the command received
 
-        // if (cmd == CMD_START) {
+        ADI_UART_RESULT_TYPE uartRxResult = adi_UART_BufRx(hUartDevice, cmdRx, &rxSize);
+        if (ADI_UART_SUCCESS != uartRxResult)
+        {
+            test_Fail("adi_UART_BufRx() failed");
+        }
+
+        if (cmdRx[0] == CMD_START)
+        {
 
             /* Setup AFE before running the sequence */
             afe_setup();
@@ -190,9 +199,17 @@ int main(void)
             
             /* Post measurement AFE deregistering */
             afe_postMeasurement();
-        // }
+        }
+        else if (cmdRx[0] == CMD_STOP)
+        {
+            stopProgram = 1;
+        }
+        else if (cmdRx[0] == CMD_ABORT)
+        {
+            stopProgram = 1;
+        }
 
-    // }
+    }
         
     /* Uninitialize the UART */
     adi_UART_UnInit(hUartDevice);
