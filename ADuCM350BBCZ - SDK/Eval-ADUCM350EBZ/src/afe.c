@@ -2015,6 +2015,39 @@ ADI_AFE_RESULT_TYPE adi_AFE_SetIndefiniteMeasurement(ADI_AFE_DEV_HANDLE const hD
     return ADI_AFE_SUCCESS;    
 }
 
+/*!
+ * @brief       Sets the remaining dma transfers to zero.
+ *
+ * @param       hDevice                                 Device handle obtained from adi_AFE_Init().
+ *
+ *
+ * @return      Status
+ *              - #ADI_AFE_SUCCESS                      Call completed successfully.
+ *              - #ADI_AFE_ERR_BAD_DEV_HANDLE           Invalid device handle.
+ *              - #ADI_AFE_ERR_NOT_INITIALIZED          Device not initialized.
+ *
+ * @details     The motivation was to be able to stop an indefinite data transfer.
+ *              An indefinite measurement time is performed if the dmaRxRemaining does not get decremented. 
+ *              By calling this function in the Rx DMA Callback, we stop the dma transfers and finally get out of the adi_AFE_RunSequence()
+ *
+ */
+
+ADI_AFE_RESULT_TYPE adi_AFE_SetDmaTransfersZero(ADI_AFE_DEV_HANDLE const hDevice) {
+
+#ifdef ADI_DEBUG
+    if (adi_AFE_InvalidHandle(hDevice)) {
+        return ADI_AFE_ERR_BAD_DEV_HANDLE;
+    }
+
+    if (adi_AFE_HandleNotInitialized(hDevice)) {
+        return ADI_AFE_ERR_NOT_INITIALIZED;
+    }
+#endif
+
+    hDevice->dmaRxRemaining = 0;
+    
+    return ADI_AFE_SUCCESS;    
+}
 
 /***************************************************************************/
 /*   High-Level Functions                                                  */
@@ -3271,7 +3304,7 @@ ADI_INT_HANDLER(DMA_AFE_RX_Int_Handler) {
     if (hDevice->cbRxDmaFcn) 
     {
         /* Pass values that can used to keep track of the transfers in dual buffer Rx DMA mode */
-        hDevice->cbRxDmaFcn(hDevice, currentLength, (void *)pCurrentBuffer);
+        hDevice->cbRxDmaFcn((void *)hDevice, currentLength, (void *)pCurrentBuffer);
     }
 }
 

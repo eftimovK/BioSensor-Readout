@@ -194,6 +194,16 @@ int main(void)
                 FAIL("adi_AFE_RunSequence");   
             }
 
+            // TODO:
+            // /* Turn off AFE_CFG: WAVEGEN_EN = 0, ADC_CONV_EN = 0, SUPPLY_LPF_EN = 0 (in case of continuous measurement) by running a short sequence */
+            // if (CONTINUOUS_MEASUREMENT)
+            // {
+            //     if (ADI_AFE_SUCCESS != adi_AFE_RunSequence(hAfeDevice, postSeq_afe_ampmeas, (uint16_t *) dmaBuffer, SAMPLE_COUNT)) 
+            //     {
+            //         FAIL("adi_AFE_RunSequence - post measurement");
+            //     }
+            // }
+
             /* Restore to using default CRC stored with the sequence */
             adi_AFE_EnableSoftwareCRC(hAfeDevice, false);
             
@@ -236,6 +246,16 @@ void RxDmaCB(void *hAfeDevice, uint32_t length, void *pBuffer)
     uint8_t                 decCounter = 0; // counts to DECIMATION, replaces modulus
     uint32_t                adc_sum = 0;
     char                    msg[MSG_MAXLEN];
+    ADI_AFE_DEV_HANDLE      hAfeDeviceTemp = (ADI_AFE_DEV_HANDLE)hAfeDevice;
+
+   /* Check if a cmd was sent to the port; then we stop the dma transfers */
+   if ( adi_UART_GetNumRxBytes(hUartDevice) )
+   {
+        if (ADI_AFE_SUCCESS != adi_AFE_SetDmaTransfersZero(hAfeDeviceTemp) )
+        {
+            FAIL("AFE: Set remaining dma transfers to zero");
+        }
+   }
 
     /* Check if there are samples to be sent */
     if (length)
