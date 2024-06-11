@@ -248,14 +248,27 @@ void RxDmaCB(void *hAfeDevice, uint32_t length, void *pBuffer)
     char                    msg[MSG_MAXLEN];
     ADI_AFE_DEV_HANDLE      hAfeDeviceTemp = (ADI_AFE_DEV_HANDLE)hAfeDevice;
 
-   /* Check if a cmd was sent to the port; then we stop the dma transfers */
-   if ( adi_UART_GetNumRxBytes(hUartDevice) )
-   {
-        if (ADI_AFE_SUCCESS != adi_AFE_SetDmaTransfersZero(hAfeDeviceTemp) )
-        {
-            FAIL("AFE: Set remaining dma transfers to zero");
-        }
-   }
+    /* Check if a cmd was sent to the port */
+    if ( adi_UART_GetNumRxBytes(hUartDevice) )
+    {
+            /* Read one character to check if the STOP command was sent */
+            int16_t rxSize = 1;
+            int8_t cmdRx[1];
+            ADI_UART_RESULT_TYPE uartRxResult = adi_UART_BufRx(hUartDevice, cmdRx, &rxSize);
+            if (ADI_UART_SUCCESS != uartRxResult)
+            {
+                FAIL("adi_UART_BufRx() inside RxDmaCb failed");
+            }
+
+            if (cmdRx[0] == CMD_STOP)
+            {
+                /* Stop dma transfers */
+                if (ADI_AFE_SUCCESS != adi_AFE_SetDmaTransfersZero(hAfeDeviceTemp) )
+                {
+                    FAIL("AFE: Set remaining dma transfers to zero");
+                }
+            }
+    }
 
     /* Check if there are samples to be sent */
     if (length)
