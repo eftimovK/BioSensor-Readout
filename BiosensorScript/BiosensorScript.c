@@ -73,7 +73,7 @@ License Agreement.
 
 
 /* Set decimation (downsampling) factor and whether to run dma transfers indefinitely */
-#define DECIMATION                  (uint8_t)(160)
+#define DECIMATION                  (uint8_t)(1)
 #define CONTINUOUS_MEASUREMENT      (bool_t)(1)
 
 /* Set codes for commands that are received through UART (e.g. by a GUI)              */
@@ -83,7 +83,7 @@ License Agreement.
 #define CMD_ABORT  -1
 
 /* Number of samples to be transferred by DMA, based on the duration of the sequence. */
-#define SAMPLE_COUNT                (uint32_t)(4000) // ADC_SPS / DECIMATION * DURATION = max_SAMPLE_COUNT; (ADC_SPS = 160kSPS)
+#define SAMPLE_COUNT                (uint32_t)(2842) // ADC_SPS / DECIMATION * DURATION = max_SAMPLE_COUNT; (ADC_SPS = 160kSPS)
 
 /* Size limit for each DMA transfer (max 1024) */
 #define DMA_BUFFER_SIZE             (1024u)  // should be a multiple of DECIMATION! else, it gets rounded to the nearest multiple
@@ -122,6 +122,45 @@ uint32_t seq_afe_ampmeas[] = {
     0x00000000,   /* 20 - Wait: finish DMA transfers (placeholder, programmed below)                        */
 //    0x80020EF0,   /* 21 - AFE_CFG: WAVEGEN_EN = 0, ADC_CONV_EN = 0, SUPPLY_LPF_EN = 0                       */   // comment out, adjust command count above, and set CONTINUOUS_MEASUREMENT=1 to run indefinitely
     0x82000002,   /* 22 - AFE_SEQ_CFG: SEQ_EN = 0                                                           */
+};
+
+// NOTE: the delay and slope times are calculated in units of DAC rate (320kHz)
+//       --> this means, to do a 1sec. slope time, we should convert 1s*320kHz =320000 =4E200 to hexadecimal code
+// 
+// Things to try out for debugging: (+ means worked well)
+// + *use 0x9200FFFF instead of 0x920FFFFF for the Slope time
+// + *continuous measurement --> leave cmd 15 out! do not disable WAVEGEN and ADC
+//  
+//  *disabling DAC atten. after 2nd cmd, by 0x88000F00, /*  3 - AFE_DAC_CFG: DAC_ATTEN_EN = 0 (disable DAC attenuator)                            */
+//  *right before enabling the generator, 0xA2000000, /*  13 - AFE_SUPPLY_LPF_CFG: BYPASS_SUPPLY_LPF = 0 (do not bypass)                         */
+//  *try with the script from the forum (https://ez.analog.com/microcontrollers/precision-microcontrollers/w/documents/2338/continuously-amperometric-measurement-example)
+
+/*
+ * AFE DC measurement (trapezoid); adapted from afe_sequences.h
+ */
+const uint32_t seq_afe_trap[] = {
+    0x001000B4, /*  0 - Safety Word, Command Count = 16, CRC = 0xB4                                                                                 */
+    0x84007818, /*  1 - AFE_FIFO_CFG: DATA_FIFO_DMA_REQ_EN = 1 DATA_FIFO_SOURCE_SEL = 0b11 CMD_FIFO_DMA_REQ_EN = 1 CMD_FIFO_EN = 1 DATA_FIFO_EN = 1 */
+    0x8A000037, /*  2_edit reset gen. 0x0037 instead of 0x0036 - AFE_WG_CFG: TYPE_SEL = 0b11                                                                                                 */
+    0x8C000400, /*  3_edit: -0.4V - AFE_WG_DCLEVEL_1: TRAP_DC_LEVEL_1 = 0x800                                                                                   */
+    0x8E000FFF, /*  4_edit:  0.8V - AFE_WG_DCLEVEL_2: TRAP_DC_LEVEL_2 = 0xC80                                                                                   */
+    0x90000140, /*  5_edit: 1ms=0x90000140 - AFE_WG_DELAY_1: TRAP_DELAY_1 = 0x7F8D                                                                                       */
+    0x9207D000, /*  6_edit: 1.6s - AFE_WG_SLOPE_1: TRAP_SLOPE_1 = 0x0CC1                                                                                       */
+    0x0000063E, /*  7 - Wait: 100 us                                                                                                                */
+                /* This wait is needed because all the commands before this one are MMR writes. They are executed in a single clock cycle, and the  */
+                /* DMA controller cannot keep up, resulting in the sequencer being starved (triggering a command FIFO underflow). 100us is          */
+                /* sufficiently large and could be adjusted, depending on system load.                                                              */
+    0x94000140, /*  8_edit: 1ms=0x94000140 - AFE_WG_DELAY_2: TRAP_DELAY_2 = 0x7F8D                                                                                       */
+    0x9607D000, /*  9_edit: 1.6s - AFE_WG_SLOPE_2: TRAP_SLOPE_2 = 0x0CC1                                                                                       */
+    // 0x86003267, /* 10 (4-wire) - AFE_SW_CFG: DMUX_STATE = 7 PMUX_STATE = 6 NMUX_STATE = 2 TMUX_STATE = 3                                                     */
+    0x86006655,   /*  10_edit (2-wire) - DMUX_STATE = 5, PMUX_STATE = 5, NMUX_STATE = 6, TMUX_STATE = 6                    */
+    0xA0000002, /* 11 - AFE_ADC_CFG: MUX_SEL = 0b10 GAIN_OFFS_SEL = 0                                                                               */
+    0x0000063E, /* 12 - Wait: 100 us                                                                                                                */
+    0x80034FF0, /* 13 - AFE_CFG: WAVEGEN_EN = 1 ADC_CONV_EN = 1 SUPPLY_LPF_EN = 1                                                                   */
+    0x030D4000, /* 14_edit - Wait: 250 ms ; 3.2s = 0x030D4000; 1s = 0x00F42400                                                                                                                */
+    // 0x80020EF0, /* 15 - AFE_CFG: WAVEGEN_EN = 0 ADC_CONV_EN = 0 SUPPLY_LPF_EN = 0 
+    0x0000063E, /* 15_edit: placeholder for continuous measurement - Wait: 100 us                                                                    */
+    0x82000002  /* 16 - AFE_SEQ_CFG: SEQ_EN = 0                                                                                                     */
 };
 
 /* Variables and functions needed for data output through UART */
@@ -189,7 +228,7 @@ int main(void)
             adi_AFE_EnableSoftwareCRC(hAfeDevice, true);
 
             /* Perform the Amperometric measurement(s) */
-            if (ADI_AFE_SUCCESS != adi_AFE_RunSequence(hAfeDevice, seq_afe_ampmeas, (uint16_t *) dmaBuffer, SAMPLE_COUNT)) 
+            if (ADI_AFE_SUCCESS != adi_AFE_RunSequence(hAfeDevice, seq_afe_trap, (uint16_t *) dmaBuffer, SAMPLE_COUNT)) 
             {
                 FAIL("adi_AFE_RunSequence");   
             }
