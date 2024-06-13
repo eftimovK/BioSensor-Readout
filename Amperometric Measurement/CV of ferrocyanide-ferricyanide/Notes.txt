@@ -1,0 +1,4 @@
+Cyclic voltammetry of ferrocyanide/ferricyanide redox
+using Palmsense's Metron dropsense 250AT
+
+the suffix 'handy' means a mobile phone was used in close proximity of the chip/electrodes in order to keep the chip stay straight
