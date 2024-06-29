@@ -21,6 +21,7 @@ License Agreement.
 #include "afe.h"
 #include "afe_lib.h"
 #include "uart.h"
+#include "command_ID.h"
 
 /* Macro to enable the returning of AFE data using the UART */
 /*      1 = return AFE data on UART                         */
@@ -40,14 +41,16 @@ License Agreement.
 /*  <---- dur1 ----><--- dur2 ---><---- dur3 ----><---- dur4 ---->          */
 /****************************************************************************/
 
+// TODO: reorganize all necessary macros and sequences in a config/header file
+
 /* DC Level 1 voltage in mV (range: -0.8V to 0.8V) */
 #define VL1                         (0)
 /* DC Level 2 voltage in mV (range: -0.8V to 0.8V) */
 #define VL2                         (300)
 /* The duration (in us) of DC Level 1 voltage */
-#define DURL1                       ((uint32_t)(2000000))
+#define DURL1                       ((uint32_t)(4000000))
 /* The duration (in us) of DC Level 2 voltage */
-#define DURL2                       ((uint32_t)(2000000))
+#define DURL2                       ((uint32_t)(4000000))
 /* The duration (in us) which the IVS switch should remain closed (to shunt */
 /* switching current) before changing the DC level.                         */
 #define DURIVS1                     ((uint32_t)(100))
@@ -71,19 +74,29 @@ License Agreement.
 /* DO NOT EDIT: DC Level 2 in DAC codes */
 #define DACL2                       ((uint32_t)(((float)VL2 / (float)DAC_LSB_SIZE) + 0x800))
 
+/* 
+    Configurable variables used in the sequencer 
+*/
+/* DC Level 1 voltage in mV (range: -0.8V to 0.8V) */
+int32_t    voltageLevel = 0;
+/* DC Level 2 voltage in mV (range: -0.8V to 0.8V) */
+int32_t    voltageLevel2 = 300;
+/* The duration (in us) of DC Level 1 voltage */
+int32_t    voltageLevelDur = 1000000;  // 1s as default
+/* DC Level 1 in DAC codes */
+uint32_t    voltageLevel_DAC = ((uint32_t)(((float)0 / (float)DAC_LSB_SIZE) + 0x800));
+/* DC Level 2 in DAC codes */
+uint32_t    voltageLevel2_DAC = ((uint32_t)(((float)0 / (float)DAC_LSB_SIZE) + 0x800));
+
+uint8_t restBytes = 0;
 
 /* Set decimation (downsampling) factor and whether to run dma transfers indefinitely */
 #define DECIMATION                  (uint8_t)(160)
 #define CONTINUOUS_MEASUREMENT      (bool_t)(0)
 
-/* Set codes for commands that are received through UART (e.g. by a GUI)              */
-#define CMD_START   1
-#define CMD_STOP    0
-#define CMD_CONFIG  5
-#define CMD_ABORT  -1
-
+// TODO: remove hard-coded SAMPLE_COUNT, but set based on sequence duration, when not running in continuous mode
 /* Number of samples to be transferred by DMA, based on the duration of the sequence. */
-#define SAMPLE_COUNT                (uint32_t)(3198*10) // ADC_SPS / DECIMATION * DURATION = max_SAMPLE_COUNT; (ADC_SPS = 160kSPS)
+#define SAMPLE_COUNT                (uint32_t)(8000) // ADC_SPS / DECIMATION * DURATION = max_SAMPLE_COUNT; (ADC_SPS = 160kSPS)
 
 /* Size limit for each DMA transfer (max 1024) */
 #define DMA_BUFFER_SIZE             (1024u)  // should be a multiple of DECIMATION! else, it gets rounded to the nearest multiple
@@ -164,6 +177,34 @@ const uint32_t seq_afe_trap[] = {
     0x82000002  /* 16 - AFE_SEQ_CFG: SEQ_EN = 0                                                                                                     */
 };
 
+// TODO: program sequence for the testing event
+/* Amperometric measuring sequence for the creatinine samples for the testing event */
+uint32_t seq_sampleMeasurement[] = {
+    0x00150065,   /*  0 - Safety Word, Command Count = 15, CRC = 0x1C                                       */  // adjust command count accordingly!
+    0x84003818,   /* 1 - AFE_FIFO_CFG: DATA_FIFO_SOURCE_SEL = 0b01 (ADC)                                    */
+    0x8A000030,   /*  2 - AFE_WG_CFG: TYPE_SEL = 0b00                                                       */
+    0x88000F00,   /*  3 - AFE_DAC_CFG: DAC_ATTEN_EN = 0 (disable DAC attenuator)                            */
+    0xAA000800,   /*  4 - AFE_WG_DAC_CODE: DAC_CODE = 0x800 (DAC Level 1 placeholder, user programmable)    */
+    0xA0000002,   /*  5 - AFE_ADC_CFG: MUX_SEL = 0b00010, GAIN_OFFS_SEL = 0b00 (TIA)                        */
+    0xA2000000,   /*  6 - AFE_SUPPLY_LPF_CFG: BYPASS_SUPPLY_LPF = 0 (do not bypass)                         */
+    0x86006655,   /*  7 - DMUX_STATE = 5, PMUX_STATE = 5, NMUX_STATE = 6, TMUX_STATE = 6                    */
+    0x0001A900,   /*  8 - Wait: 6.8ms (based on load RC = 6.8kOhm * 1uF)                                    */
+    0x80024EF0,   /*  9 - AFE_CFG: WG_EN = 1                                                                */
+    0x00000C80,   /* 10 - Wait: 200us                                                                       */
+    0x80034FF0,   /* 11 - AFE_CFG: ADC_CONV_EN = 1, SUPPLY_LPF_EN = 1                                       */
+    0x00090880,   /* 12 - Wait: 37ms  for LPF settling                                                      */
+    0x00000000,   /* 13 - Wait: (DAC Level 1 duration - IVS duration 1) (placeholder, user programmable)    */
+    0x86016655,   /* 14 - IVS_STATE = 1 (close IVS switch, user programmable)                               */
+    0x00000000,   /* 15 - Wait: IVS duration 1 (placeholder, user programmable)                             */
+    0xAA000800,   /* 16 - AFE_WG_DAC_CODE: DAC_CODE = 0x800 (DAC Level 2 placeholder, user programmable)    */
+    0x00000000,   /* 17 - Wait: IVS duration 2 (placeholder, user programmable)                             */
+    0x86006655,   /* 18 - IVS_STATE = 0 (open IVS switch)                                                   */
+    0x00000000,   /* 19 - Wait: (DAC Level 2 duration - IVS duration 2) (placeholder, user programmable)    */
+    0x00000000,   /* 20 - Wait: finish DMA transfers (placeholder, programmed below)                        */
+//    0x80020EF0,   /* 21 - AFE_CFG: WAVEGEN_EN = 0, ADC_CONV_EN = 0, SUPPLY_LPF_EN = 0                       */   // comment out, adjust command count above, and set CONTINUOUS_MEASUREMENT=1 to run indefinitely
+    0x82000002,   /* 22 - AFE_SEQ_CFG: SEQ_EN = 0                                                           */
+};
+
 /* Variables and functions needed for data output through UART */
 ADI_UART_HANDLE     hUartDevice     = NULL;
 ADI_AFE_DEV_HANDLE  hAfeDevice;
@@ -229,13 +270,13 @@ int main(void)
             adi_AFE_EnableSoftwareCRC(hAfeDevice, true);
 
             /* Perform the Amperometric measurement(s) */
-            if (ADI_AFE_SUCCESS != adi_AFE_RunSequence(hAfeDevice, seq_afe_trap, (uint16_t *) dmaBuffer, SAMPLE_COUNT)) 
+            if (ADI_AFE_SUCCESS != adi_AFE_RunSequence(hAfeDevice, seq_afe_ampmeas, (uint16_t *) dmaBuffer, SAMPLE_COUNT)) 
             {
                 FAIL("adi_AFE_RunSequence");   
             }
 
             // TODO:
-            // /* Turn off AFE_CFG: WAVEGEN_EN = 0, ADC_CONV_EN = 0, SUPPLY_LPF_EN = 0 (in case of continuous measurement) by running a short sequence */
+            // /* Turn off AFE_CFG: WAVEGEN_EN = 0, ADC_CONV_EN = 0, SUPPLY_LPF_EN = 0 (in case of continuous measurement) by running a short turn-off sequence */
             // if (CONTINUOUS_MEASUREMENT)
             // {
             //     if (ADI_AFE_SUCCESS != adi_AFE_RunSequence(hAfeDevice, postSeq_afe_ampmeas, (uint16_t *) dmaBuffer, SAMPLE_COUNT)) 
@@ -257,6 +298,83 @@ int main(void)
         else if (cmdRx[0] == CMD_ABORT)
         {
             stopProgram = 1;
+        }
+        else if (cmdRx[0] == CMD_START_CONFIG)
+        {
+            int8_t temp;
+            bool_t configSuccess = 1;
+            bool_t stopConfig    = 0;            
+
+            while(!stopConfig)    // breaks if the stop config or an unknown cmd ID was sent
+            {
+                int16_t rxByteSize = 1;      // byte size of receive command
+                ADI_UART_RESULT_TYPE uartRxResult = adi_UART_BufRx(hUartDevice, cmdRx, &rxByteSize);
+
+                int32_t *targetParameter = NULL;  // Pointer to store address of the parameter to be updated
+                temp = cmdRx[0];
+
+                switch (cmdRx[0])
+                {
+                    case CMD_STOP_CONFIG:
+                        stopConfig = true;
+                        break;       // refers to the loop
+                    case PARAMETERS_VOLTAGE:
+                        rxByteSize = 4;
+                        targetParameter = &voltageLevel;
+                        break;
+                    case PARAMETERS_DUR:
+                        rxByteSize = 4;
+                        targetParameter = &voltageLevelDur;
+                        break;
+                    
+                    default:    // tried to configure a parameter that is not known
+                        configSuccess = 0;
+                        stopConfig = true;
+                        restBytes = 0;
+                       
+                        /* TODO: handle case where few more bytes were sent after the unknown cmd ID
+                                 the problem is, that the the while-condition adi_UART_GetNumRxBytes(hUartDevice)
+                                 gets checked faster than the bytes get received, thus skipping the read() inside
+                                 a simple wait would do the trick; currently the printf() does this by slowing the execution...
+                         */
+                        printf("Unknown cmd ID : %d\n", temp);
+
+                        /* ignore the bytes sent after an unrecognized cmd ID */
+                        while ( adi_UART_GetNumRxBytes(hUartDevice) )
+                        {
+                                rxByteSize = 1;
+                                int8_t dummyRx[1];
+                                adi_UART_BufRx(hUartDevice, dummyRx, &rxByteSize);
+                                restBytes += 1;
+                        }
+//                        printf("restBytes = %d\n", restBytes);
+                        break;
+                }
+
+                if (!stopConfig)
+                {
+                    /* read and set the parameter value */
+
+                    int8_t paramValueRx[4]; // buffer for the parameter value (set to max 4 bytes)
+
+                    uartRxResult = adi_UART_BufRx(hUartDevice, paramValueRx, &rxByteSize);
+                    if (ADI_UART_SUCCESS != uartRxResult)
+                    {
+                        FAIL("adi_UART_BufRx() for parameter value failed");
+                    }
+
+                    int32_t *paramValue_ptr = (int32_t *)&paramValueRx[0];
+                    *targetParameter = *paramValue_ptr;
+                }
+
+                /* send back success status */
+                int16_t txSize = 1u;
+                ADI_UART_RESULT_TYPE uartResult = adi_UART_BufTx(hUartDevice, &configSuccess, &txSize);
+                if (ADI_UART_SUCCESS != uartResult)
+                {
+                    test_Fail("adi_UART_BufTx() failed");
+                }
+            }
         }
 
     }
@@ -440,10 +558,13 @@ void afe_setup (void)
         // seq_afe_ampmeas[20] = 0.05*(DURL1 + DURL2) * 16; // wait 5% of the total measurement duration
                                                          // to make sure the dma transfers are complete
 
+    // TODO: remove hard coded indexing in the sequence array; ideally use seq_afe_ampmeas[V_ind]=SEQ_MMR_WRITE(...) for modifying the voltage
     /* Set DAC Level 1 */
-    seq_afe_ampmeas[4]  = SEQ_MMR_WRITE(REG_AFE_AFE_WG_DAC_CODE, DACL1);
+    voltageLevel_DAC = ((uint32_t)(((float)voltageLevel / (float)DAC_LSB_SIZE) + 0x800));
+    seq_afe_ampmeas[4]  = SEQ_MMR_WRITE(REG_AFE_AFE_WG_DAC_CODE, voltageLevel_DAC);
     /* Set DAC Level 2 */
-    seq_afe_ampmeas[16] = SEQ_MMR_WRITE(REG_AFE_AFE_WG_DAC_CODE, DACL2);
+    voltageLevel2_DAC = ((uint32_t)(((float)voltageLevel2 / (float)DAC_LSB_SIZE) + 0x800));
+    seq_afe_ampmeas[16] = SEQ_MMR_WRITE(REG_AFE_AFE_WG_DAC_CODE, voltageLevel2_DAC);
     
     if (!SHUNTREQD)
     {
