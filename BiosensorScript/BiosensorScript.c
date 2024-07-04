@@ -48,10 +48,10 @@ License Agreement.
     Configurable parameters from GUI: 
         Voltage Level 2 [mV]
 
-    Configurable parameters from macros: 
+    Configurable parameters from macros (in this script):
         Voltage Level 1 (VL1)   [mV]
-        Duration DURL1          [mV]
-        Duration DURL2          [mV]
+        Duration DURL1          [us]
+        Duration DURL2          [us]
         Duration DURIVS1        [us]
         Duration DURIVS2        [us]
 
@@ -91,14 +91,11 @@ uint32_t seq_stepVoltage[] = {
     0x82000002,   /* 21 - AFE_SEQ_CFG: SEQ_EN = 0                                                           */
 };
 
-
 /* 
-    Configurable parameters from macros
+    Configurable parameters from macros (in this script)
 */
 /* DC Level 1 voltage in mV (range: -0.8V to 0.8V) */
 #define VL1                         (0)
-/* DC Level 2 voltage in mV (range: -0.8V to 0.8V) */
-#define VL2                         (300)
 /* The duration (in us) of DC Level 1 voltage */
 #define DURL1                       ((uint32_t)(100))   // set to match DURIVS1
 /* The duration (in us) of DC Level 2 voltage */
@@ -108,8 +105,6 @@ uint32_t seq_stepVoltage[] = {
 #define DAC_LSB_SIZE                (0.39072)
 /* DO NOT EDIT: DC Level 1 in DAC codes */
 #define DACL1                       ((uint32_t)(((float)VL1 / (float)DAC_LSB_SIZE) + 0x800))
-/* DO NOT EDIT: DC Level 2 in DAC codes */
-#define DACL2                       ((uint32_t)(((float)VL2 / (float)DAC_LSB_SIZE) + 0x800))
 
 /* The duration (in us) which the IVS switch should remain closed (to shunt */
 /* switching current) before changing the DC level.                         */
@@ -128,11 +123,33 @@ int32_t    voltageLevel2 = 100;
 /* DC Level 2 in DAC codes */
 uint32_t    voltageLevel2_DAC = ((uint32_t)(((float)0 / (float)DAC_LSB_SIZE) + 0x800));
 
+
+/****************************************************************************/
+/*  <-------------------------DURCV---------------------------->            */
+/*                ______                    ______                <--- VL2  */
+/*               /      \                  /      \                         */
+/*              /        \                /        \                        */
+/*             /          \              /          \                       */
+/*            /            \            /            \                      */
+/*           /              \          /              \                     */
+/*  ________/                \________/                \________  <--- VL1  */
+/*                                                                          */
+/*  <--D1--><-S1-><-D2-><-S2->                                              */
+/* 
+    D1  = TRAP_DELAY1
+    D2  = TRAP_DELAY2
+    S1  = TRAP_SLOPE_1
+    S2  = TRAP_SLOPE_2
+    VL1 = TRAP_DC_LEVEL_1
+    VL2 = TRAP_DC_LEVEL_2
+*/
+/****************************************************************************/
+
 // NOTE: the delay and slope times are calculated in units of DAC rate (320kHz)
 //       --> this means, to do a 1sec. slope time, we should convert 1s*320kHz =320000 =4E200 to hexadecimal code
 // 
 // Things to try out for debugging: (+ means worked well)
-// + *use 0x9200FFFF instead of 0x920FFFFF for the Slope time
+// + *use 0x9200FFFF instead of 0x920FFFFF for the Slope time (because max. is 1.6s)
 // + *continuous measurement --> leave cmd 15 out! do not disable WAVEGEN and ADC
 //  
 //  *disabling DAC atten. after 2nd cmd, by 0x88000F00, /*  3 - AFE_DAC_CFG: DAC_ATTEN_EN = 0 (disable DAC attenuator)                            */
@@ -144,35 +161,71 @@ uint32_t    voltageLevel2_DAC = ((uint32_t)(((float)0 / (float)DAC_LSB_SIZE) + 0
     Configurable parameters from GUI: 
         Voltage Level 1 [mV]
         Voltage Level 2 [mV]
-        Slope time      [us]
+        Slope time      [us] (refers to both TRAP_SLOPE 1 and 2)
+        
+    Configurable parameters from macros (in this script):
+        TRAP_DELAY_1    [us]
+        TRAP_DELAY_2    [us]
         Duration        [us]
 
+    Important hard-coded settings:
+        ADC output (DATA_FIFO_SOURCE_SEL = 0b01)
+        4-wire electrode pins: (see switch matrix command)
+            CE   == AFE7
+            REF+ == AFE6
+            REF- == AFE2
+            WE   == AFE3
+
  */
-const uint32_t seq_cv[] = {
+uint32_t seq_cv[] = {
     0x001000B4, /*  0 - Safety Word, Command Count = 16, CRC = 0xB4                                                                                 */
     0x84003818, /*  1 - AFE_FIFO_CFG: DATA_FIFO_DMA_REQ_EN = 1 DATA_FIFO_SOURCE_SEL = 0b01 (ADC) CMD_FIFO_DMA_REQ_EN = 1 CMD_FIFO_EN = 1 DATA_FIFO_EN = 1 */
-    0x8A000037, /*  2_edit reset gen. 0x0037 instead of 0x0036 - AFE_WG_CFG: TYPE_SEL = 0b11                                                                                                 */
-    0x8C000400, /*  3_edit: -0.4V - AFE_WG_DCLEVEL_1: TRAP_DC_LEVEL_1 = 0x800                                                                                   */
-    0x8E000FFF, /*  4_edit:  0.8V - AFE_WG_DCLEVEL_2: TRAP_DC_LEVEL_2 = 0xC80                                                                                   */
-    0x90000140, /*  5_edit: 1ms=0x90000140 - AFE_WG_DELAY_1: TRAP_DELAY_1 = 0x7F8D                                                                                       */
-    0x9207D000, /*  6_edit: 1.6s - AFE_WG_SLOPE_1: TRAP_SLOPE_1 = 0x0CC1                                                                                       */
+    0x8A000037, /*  2_edit AFE_WG_CFG: WG_TRAP_RESET=1 (0x37 instead of 0x36), TYPE_SEL = 0b11                                                           */
+    0x8C000800, /*  3 - AFE_WG_DCLEVEL_1: TRAP_DC_LEVEL_1 = 0x800 (placeholder, user programmable)                                           */
+    0x8E000C80, /*  4 - AFE_WG_DCLEVEL_2: TRAP_DC_LEVEL_2 = 0xC80 (placeholder, user programmable)                                           */
+    0x90000140, /*  5_edit: 1ms=0x90000140 - AFE_WG_DELAY_1: TRAP_DELAY_1 = 0x7F8D (placeholder, user programmable)                                      */
+    0x9207D000, /*  6_edit: 1.6s=0x7D000   - AFE_WG_SLOPE_1: TRAP_SLOPE_1 = 0x0CC1           (placeholder, user programmable)                                      */
     0x0000063E, /*  7 - Wait: 100 us                                                                                                                */
                 /* This wait is needed because all the commands before this one are MMR writes. They are executed in a single clock cycle, and the  */
                 /* DMA controller cannot keep up, resulting in the sequencer being starved (triggering a command FIFO underflow). 100us is          */
                 /* sufficiently large and could be adjusted, depending on system load.                                                              */
-    0x94000140, /*  8_edit: 1ms=0x94000140 - AFE_WG_DELAY_2: TRAP_DELAY_2 = 0x7F8D                                                                                       */
-    0x9607D000, /*  9_edit: 1.6s - AFE_WG_SLOPE_2: TRAP_SLOPE_2 = 0x0CC1                                                                                       */
-    0x86003267, /* 10 (4-wire) - AFE_SW_CFG: DMUX_STATE = 7 PMUX_STATE = 6 NMUX_STATE = 2 TMUX_STATE = 3                                                     */
-    // 0x86006655,   /*  10_edit (2-wire) - DMUX_STATE = 5, PMUX_STATE = 5, NMUX_STATE = 6, TMUX_STATE = 6                    */
-    0xA0000002, /* 11 - AFE_ADC_CFG: MUX_SEL = 0b10 GAIN_OFFS_SEL = 0                                                                               */
+    0x94000140, /*  8_edit: 1ms=0x94000140 - AFE_WG_DELAY_2: TRAP_DELAY_2 = 0x7F8D (placeholder, user programmable)                                 */
+    0x9607D000, /*  9_edit: 1.6s - AFE_WG_SLOPE_2: TRAP_SLOPE_2 = 0x0CC1           (placeholder, user programmable)                                 */
+    0x86003267, /*  10_(4-wire) - AFE_SW_CFG: DMUX_STATE = 7 PMUX_STATE = 6 NMUX_STATE = 2 TMUX_STATE = 3                                            */
+    // 0x86006655,   /*  10_(2-wire) - DMUX_STATE = 5, PMUX_STATE = 5, NMUX_STATE = 6, TMUX_STATE = 6                    */
+    0xA0000002, /* 11 - AFE_ADC_CFG: MUX_SEL = 0b10 GAIN_OFFS_SEL = 0b00 (TIA)                                                                      */
     0x0000063E, /* 12 - Wait: 100 us                                                                                                                */
     0x80034FF0, /* 13 - AFE_CFG: WAVEGEN_EN = 1 ADC_CONV_EN = 1 SUPPLY_LPF_EN = 1                                                                   */
-    // set waiting according to the cycles of the signal; CYCLES = WAIT_DURATION / (SLOPE1+SLOPE2)
-    0x1E848000, /* 14_edit - Wait: 250 ms ; 3.2s = 0x030D4000; 6.4s=0x061A8000; 3.2*10=0x1E848000; 1s = 0x00F42400                                                                                                                */
+    // set waiting according to the cycles of the signal; CYCLES = WAIT_DURATION / (SLOPE_1+SLOPE_2)
+    0x0000063E, /* 14_edit - Wait: (CV duration) 3.2s=0x030D4000; 3.2*10=0x1E848000; 1s=0x00F42400; 100us=0x0000063E (placeholder, user programmable)                           */
     // 0x80020EF0, /* 15 - AFE_CFG: WAVEGEN_EN = 0 ADC_CONV_EN = 0 SUPPLY_LPF_EN = 0                                                                */  // comment this command out if CONTINUOUS_MEASUREMENT=1 and use the one below
     0x00000000, /* 15_CONTINUOUS: placeholder for the 15th command (no need to change command count above) - Wait: 0 us                             */
     0x82000002  /* 16 - AFE_SEQ_CFG: SEQ_EN = 0                                                                                                     */
 };
+
+/* 
+    Configurable parameters from macros (in this script)
+*/
+/* The duration (in us) of DC Level 1 voltage (MAX. 1.6 seconds !) */
+#define TRAP_DELAY_1                       ((uint32_t)(0))    // set to 0 for a triangular instead of trapezoidal signal
+/* The duration (in us) of DC Level 2 voltage (MAX. 1.6 seconds !) */
+#define TRAP_DELAY_2                       ((uint32_t)(0))    // set to 0 for a triangular instead of trapezoidal signal
+/* The duration (in us) of the CV excitation signal */
+#define DURCV                              ((uint32_t)(0))    // set to 0 since we are running in continuous mode
+
+/* 
+    Configurable variables from GUI
+*/
+/* DC Level 1 voltage in mV (range: -0.8V to 0.8V) */
+int32_t    voltageLevelCV1 = 0;
+/* DC Level 1 voltage in mV (range: -0.8V to 0.8V) */
+int32_t    voltageLevelCV2 = 100;
+/* Slope time between voltage levels in us (MAX. 1.6 seconds !) */
+int32_t    slopeTimeCV = 1000000;
+/* DC Level 1 in DAC codes */
+uint32_t   voltageLevelCV1_DAC = ((uint32_t)(((float)0 / (float)DAC_LSB_SIZE) + 0x800));
+/* DC Level 1 in DAC codes */
+uint32_t   voltageLevelCV2_DAC = ((uint32_t)(((float)0 / (float)DAC_LSB_SIZE) + 0x800));
 
 /* 
     Sequence for turning off the wave generator, adc conversion and LPF.
@@ -254,6 +307,7 @@ ADI_UART_RESULT_TYPE    uart_setup                  (void);
 ADI_UART_RESULT_TYPE    uart_UnInit                 (void);
 void                    afe_setup                   (void);
 void                    seq_stepVoltage_setup       (void);
+void                    seq_cv_setup                (void);
 void                    afe_postMeasurement         (void);
 extern int32_t          adi_initpinmux              (void);
 void        RxDmaCB         (void *hAfeDevice, 
@@ -340,7 +394,7 @@ int main(void)
             afe_setup();
 
             /* Set sequence-specific programmable parameters */
-            // seq_cv_setup();
+            seq_cv_setup();
             
             /* Recalculate CRC in software for the amperometric measurement */
             adi_AFE_EnableSoftwareCRC(hAfeDevice, true);
@@ -396,6 +450,18 @@ int main(void)
                     case PARAM_VOLTAGE_STEP:
                         rxByteSize = 4;
                         targetParameter = &voltageLevel2;
+                        break;
+                    case PARAM_VOLTAGE1_CV:
+                        rxByteSize = 4;
+                        targetParameter = &voltageLevelCV1;
+                        break;
+                    case PARAM_VOLTAGE2_CV:
+                        rxByteSize = 4;
+                        targetParameter = &voltageLevelCV2;
+                        break;
+                    case PARAM_SLOPE_CV:
+                        rxByteSize = 4;
+                        targetParameter = &slopeTimeCV;
                         break;
                     
                     default:    // tried to configure a parameter that is not known
@@ -624,10 +690,10 @@ void seq_stepVoltage_setup(void)
 
     if (SHUNTREQD) 
     {
-    dur1 = DURL1 - DURIVS1;
-    dur2 = DURIVS1;
-    dur3 = DURIVS2;
-    dur4 = DURL2 - DURIVS2;
+        dur1 = DURL1 - DURIVS1;
+        dur2 = DURIVS1;
+        dur3 = DURIVS2;
+        dur4 = DURL2 - DURIVS2;
     }
     else 
     {
@@ -656,6 +722,33 @@ void seq_stepVoltage_setup(void)
         /* IVS switch remains open */
         seq_stepVoltage[14] &= 0xFFFEFFFF;
     }
+}
+
+/* Set sequence-specific programmable parameters */
+void seq_cv_setup(void)
+{
+    /* Set the user programmable portions of the sequence */
+    
+    // TODO: remove hard coded indexing in the sequence array; e.g. use seq_cv[V_ind]=SEQ_MMR_WRITE(...) for modifying the voltage
+            
+    /* Set trapezoid delays in DAC periods (DAC update rate =320kHz) */
+    seq_cv[5] = SEQ_MMR_WRITE(REG_AFE_AFE_WG_DELAY_1, (uint32_t)(TRAP_DELAY_1 * 0.32));
+    seq_cv[8] = SEQ_MMR_WRITE(REG_AFE_AFE_WG_DELAY_2, (uint32_t)(TRAP_DELAY_2 * 0.32));
+
+    /* Set trapezoid slope durations in DAC periods (DAC update rate =320kHz) */
+    seq_cv[6] = SEQ_MMR_WRITE(REG_AFE_AFE_WG_SLOPE_1, (uint32_t)(slopeTimeCV * 0.32));
+    seq_cv[9] = SEQ_MMR_WRITE(REG_AFE_AFE_WG_SLOPE_2, (uint32_t)(slopeTimeCV * 0.32));
+
+    /* Set duration of signal in ACLK periods */
+    seq_cv[14] = DURCV * 16;
+    
+    /* Set voltage levels */
+    /* Set DAC Level 1 */
+    voltageLevelCV1_DAC = ((uint32_t)(((float)voltageLevelCV1 / (float)DAC_LSB_SIZE) + 0x800)); // update value
+    seq_cv[3]  = SEQ_MMR_WRITE(REG_AFE_AFE_WG_DCLEVEL_1, voltageLevelCV1_DAC);
+    /* Set DAC Level 2 */
+    voltageLevelCV2_DAC = ((uint32_t)(((float)voltageLevelCV2 / (float)DAC_LSB_SIZE) + 0x800)); // update value
+    seq_cv[4] = SEQ_MMR_WRITE(REG_AFE_AFE_WG_DCLEVEL_2, voltageLevelCV2_DAC);
 }
 
 /* Power down, un-initialization and deregistering needed for AFE after the measurement */
