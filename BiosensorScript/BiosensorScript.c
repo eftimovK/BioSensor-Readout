@@ -31,6 +31,8 @@ License Agreement.
 /* Helper macro for printing strings to UART or Std. Output */
 #define PRINT(s)                    test_print(s)
 
+// TODO: reorganize all necessary macros and sequences in a config/header file
+
 /****************************************************************************/
 /*  <----------- DURL1 -----------><----------- DURL2 ----------->          */
 /*                  <-- DURIVS1 --><-- DURIVS2 -->                          */
@@ -41,85 +43,37 @@ License Agreement.
 /*  <---- dur1 ----><--- dur2 ---><---- dur3 ----><---- dur4 ---->          */
 /****************************************************************************/
 
-// TODO: reorganize all necessary macros and sequences in a config/header file
+/* Const voltage excitation; adapted from the step voltage sequence from the amp. measurement example
 
-/* DC Level 1 voltage in mV (range: -0.8V to 0.8V) */
-#define VL1                         (0)
-/* DC Level 2 voltage in mV (range: -0.8V to 0.8V) */
-#define VL2                         (300)
-/* The duration (in us) of DC Level 1 voltage */
-#define DURL1                       ((uint32_t)(4000000))
-/* The duration (in us) of DC Level 2 voltage */
-#define DURL2                       ((uint32_t)(4000000))
-/* The duration (in us) which the IVS switch should remain closed (to shunt */
-/* switching current) before changing the DC level.                         */
-#define DURIVS1                     ((uint32_t)(100))
-/* The duration (in us) which the IVS switch should remain closed (to shunt */
-/* switching current) after changing the DC level.                          */
-#define DURIVS2                     ((uint32_t)(100))
-/* Is shunting of the switching current required? Required: 1, Not required: 0 */
-#define SHUNTREQD                   (1)
+    Configurable parameters from GUI: 
+        Voltage Level 2 [mV]
 
-/* RCAL value, in ohms                                              */
-/* Default value on ADuCM350 Switch Mux Config Board Rev.0 is 1k    */
-#define RCAL                        (1000)
-/* RTIA value, in ohms                                              */
-/* Default value on ADuCM350 Switch Mux Config Board Rev.0 is 7.5k  */
-#define RTIA                        (7500)
+    Configurable parameters from macros: 
+        Voltage Level 1 (VL1)   [mV]
+        Duration DURL1          [mV]
+        Duration DURL2          [mV]
+        Duration DURIVS1        [us]
+        Duration DURIVS2        [us]
 
-/* DO NOT EDIT: DAC LSB size in mV, before attenuator (1.6V / (2^12 - 1)) */
-#define DAC_LSB_SIZE                (0.39072)
-/* DO NOT EDIT: DC Level 1 in DAC codes */
-#define DACL1                       ((uint32_t)(((float)VL1 / (float)DAC_LSB_SIZE) + 0x800))
-/* DO NOT EDIT: DC Level 2 in DAC codes */
-#define DACL2                       ((uint32_t)(((float)VL2 / (float)DAC_LSB_SIZE) + 0x800))
+    Important hard-coded settings:
+        ADC output (DATA_FIFO_SOURCE_SEL = 0b01)
+        4-wire electrode pins: (see switch matrix command)
+            CE   == AFE7
+            REF+ == AFE6
+            REF- == AFE2
+            WE   == AFE3
 
-/* 
-    Configurable variables used in the sequencer 
 */
-/* DC Level 1 voltage in mV (range: -0.8V to 0.8V) */
-int32_t    voltageLevel = 0;
-/* DC Level 2 voltage in mV (range: -0.8V to 0.8V) */
-int32_t    voltageLevel2 = 300;
-/* The duration (in us) of DC Level 1 voltage */
-int32_t    voltageLevelDur = 1000000;  // 1s as default
-/* DC Level 1 in DAC codes */
-uint32_t    voltageLevel_DAC = ((uint32_t)(((float)0 / (float)DAC_LSB_SIZE) + 0x800));
-/* DC Level 2 in DAC codes */
-uint32_t    voltageLevel2_DAC = ((uint32_t)(((float)0 / (float)DAC_LSB_SIZE) + 0x800));
-
-uint8_t restBytes = 0;
-
-/* Set decimation (downsampling) factor and whether to run dma transfers indefinitely */
-#define DECIMATION                  (uint8_t)(160)
-#define CONTINUOUS_MEASUREMENT      (bool_t)(0)
-
-// TODO: remove hard-coded SAMPLE_COUNT, but set based on sequence duration, when not running in continuous mode
-/* Number of samples to be transferred by DMA, based on the duration of the sequence. */
-#define SAMPLE_COUNT                (uint32_t)(8000) // ADC_SPS / DECIMATION * DURATION = max_SAMPLE_COUNT; (ADC_SPS = 160kSPS)
-
-/* Size limit for each DMA transfer (max 1024) */
-#define DMA_BUFFER_SIZE             (1024u)  // should be a multiple of DECIMATION! else, it gets rounded to the nearest multiple
-
-/* Maximum printed message length. Used for printing only. */
-#define MSG_MAXLEN                  (50)
-
-#pragma location="nonvolatile_ram"  // RAM0 is non-volatile (see file ADuCM350BBCZ_CP.icf)
-uint16_t        dmaBuffer[DMA_BUFFER_SIZE * 2];
-
-#pragma location="volatile_ram"     // store in RAM1
-uint16_t        adc[SAMPLE_COUNT];
-
-/* Sequence for Amperometric measurement */
-uint32_t seq_afe_ampmeas[] = {
+uint32_t seq_stepVoltage[] = {
     0x00150065,   /*  0 - Safety Word, Command Count = 15, CRC = 0x1C                                       */  // adjust command count accordingly!
-    0x84003818,   /* 1 - AFE_FIFO_CFG: DATA_FIFO_SOURCE_SEL = 0b01 (ADC)                                    */
+    0x84003818,   /*  1 - AFE_FIFO_CFG: DATA_FIFO_SOURCE_SEL = 0b01 (ADC)                                   */
     0x8A000030,   /*  2 - AFE_WG_CFG: TYPE_SEL = 0b00                                                       */
     0x88000F00,   /*  3 - AFE_DAC_CFG: DAC_ATTEN_EN = 0 (disable DAC attenuator)                            */
     0xAA000800,   /*  4 - AFE_WG_DAC_CODE: DAC_CODE = 0x800 (DAC Level 1 placeholder, user programmable)    */
     0xA0000002,   /*  5 - AFE_ADC_CFG: MUX_SEL = 0b00010, GAIN_OFFS_SEL = 0b00 (TIA)                        */
     0xA2000000,   /*  6 - AFE_SUPPLY_LPF_CFG: BYPASS_SUPPLY_LPF = 0 (do not bypass)                         */
-    0x86006655,   /*  7 - DMUX_STATE = 5, PMUX_STATE = 5, NMUX_STATE = 6, TMUX_STATE = 6                    */
+    0x86003267,   /*  7_(4-wire) - AFE_SW_CFG: DMUX_STATE = 7 PMUX_STATE = 6 NMUX_STATE = 2 TMUX_STATE = 3  */
+    // 0x86006655,   /*  7_(2-wire) - DMUX_STATE = 5, PMUX_STATE = 5, NMUX_STATE = 6, TMUX_STATE = 6           */
     0x0001A900,   /*  8 - Wait: 6.8ms (based on load RC = 6.8kOhm * 1uF)                                    */
     0x80024EF0,   /*  9 - AFE_CFG: WG_EN = 1                                                                */
     0x00000C80,   /* 10 - Wait: 200us                                                                       */
@@ -132,10 +86,47 @@ uint32_t seq_afe_ampmeas[] = {
     0x00000000,   /* 17 - Wait: IVS duration 2 (placeholder, user programmable)                             */
     0x86006655,   /* 18 - IVS_STATE = 0 (open IVS switch)                                                   */
     0x00000000,   /* 19 - Wait: (DAC Level 2 duration - IVS duration 2) (placeholder, user programmable)    */
-    0x00000000,   /* 20 - Wait: finish DMA transfers (placeholder, programmed below)                        */
-//    0x80020EF0,   /* 21 - AFE_CFG: WAVEGEN_EN = 0, ADC_CONV_EN = 0, SUPPLY_LPF_EN = 0                       */   // comment out, adjust command count above, and set CONTINUOUS_MEASUREMENT=1 to run indefinitely
-    0x82000002,   /* 22 - AFE_SEQ_CFG: SEQ_EN = 0                                                           */
+//    0x80020EF0,   /* 20 - AFE_CFG: WAVEGEN_EN = 0, ADC_CONV_EN = 0, SUPPLY_LPF_EN = 0                     */   // comment this command out if CONTINUOUS_MEASUREMENT=1 and use the one below
+    0x00000000,   /* 20_CONTINUOUS - Wait: finish DMA transfers (placeholder, programmed below)             */
+    0x82000002,   /* 21 - AFE_SEQ_CFG: SEQ_EN = 0                                                           */
 };
+
+
+/* 
+    Configurable parameters from macros
+*/
+/* DC Level 1 voltage in mV (range: -0.8V to 0.8V) */
+#define VL1                         (0)
+/* DC Level 2 voltage in mV (range: -0.8V to 0.8V) */
+#define VL2                         (300)
+/* The duration (in us) of DC Level 1 voltage */
+#define DURL1                       ((uint32_t)(100))   // set to match DURIVS1
+/* The duration (in us) of DC Level 2 voltage */
+#define DURL2                       ((uint32_t)(0))     // set to 0 since we are running in continuous mode
+
+/* DO NOT EDIT: DAC LSB size in mV, before attenuator (1.6V / (2^12 - 1)) */
+#define DAC_LSB_SIZE                (0.39072)
+/* DO NOT EDIT: DC Level 1 in DAC codes */
+#define DACL1                       ((uint32_t)(((float)VL1 / (float)DAC_LSB_SIZE) + 0x800))
+/* DO NOT EDIT: DC Level 2 in DAC codes */
+#define DACL2                       ((uint32_t)(((float)VL2 / (float)DAC_LSB_SIZE) + 0x800))
+
+/* The duration (in us) which the IVS switch should remain closed (to shunt */
+/* switching current) before changing the DC level.                         */
+#define DURIVS1                     ((uint32_t)(100))
+/* The duration (in us) which the IVS switch should remain closed (to shunt */
+/* switching current) after changing the DC level.                          */
+#define DURIVS2                     ((uint32_t)(100))
+/* Is shunting of the switching current required? Required: 1, Not required: 0 */
+#define SHUNTREQD                   (1)
+
+/* 
+    Configurable variables from GUI
+*/
+/* DC Level 2 voltage in mV (range: -0.8V to 0.8V) */
+int32_t    voltageLevel2 = 100;
+/* DC Level 2 in DAC codes */
+uint32_t    voltageLevel2_DAC = ((uint32_t)(((float)0 / (float)DAC_LSB_SIZE) + 0x800));
 
 // NOTE: the delay and slope times are calculated in units of DAC rate (320kHz)
 //       --> this means, to do a 1sec. slope time, we should convert 1s*320kHz =320000 =4E200 to hexadecimal code
@@ -148,10 +139,16 @@ uint32_t seq_afe_ampmeas[] = {
 //  *right before enabling the generator, 0xA2000000, /*  13 - AFE_SUPPLY_LPF_CFG: BYPASS_SUPPLY_LPF = 0 (do not bypass)                         */
 //  *try with the script from the forum (https://ez.analog.com/microcontrollers/precision-microcontrollers/w/documents/2338/continuously-amperometric-measurement-example)
 
-/*
- * AFE DC measurement (trapezoid); adapted from afe_sequences.h
+/* Cyclic voltammetry excitation; adapted from the trapezoid sequence in afe_sequences.h
+
+    Configurable parameters from GUI: 
+        Voltage Level 1 [mV]
+        Voltage Level 2 [mV]
+        Slope time      [us]
+        Duration        [us]
+
  */
-const uint32_t seq_afe_trap[] = {
+const uint32_t seq_cv[] = {
     0x001000B4, /*  0 - Safety Word, Command Count = 16, CRC = 0xB4                                                                                 */
     0x84003818, /*  1 - AFE_FIFO_CFG: DATA_FIFO_DMA_REQ_EN = 1 DATA_FIFO_SOURCE_SEL = 0b01 (ADC) CMD_FIFO_DMA_REQ_EN = 1 CMD_FIFO_EN = 1 DATA_FIFO_EN = 1 */
     0x8A000037, /*  2_edit reset gen. 0x0037 instead of 0x0036 - AFE_WG_CFG: TYPE_SEL = 0b11                                                                                                 */
@@ -172,10 +169,41 @@ const uint32_t seq_afe_trap[] = {
     0x80034FF0, /* 13 - AFE_CFG: WAVEGEN_EN = 1 ADC_CONV_EN = 1 SUPPLY_LPF_EN = 1                                                                   */
     // set waiting according to the cycles of the signal; CYCLES = WAIT_DURATION / (SLOPE1+SLOPE2)
     0x1E848000, /* 14_edit - Wait: 250 ms ; 3.2s = 0x030D4000; 6.4s=0x061A8000; 3.2*10=0x1E848000; 1s = 0x00F42400                                                                                                                */
-    0x80020EF0, /* 15 - AFE_CFG: WAVEGEN_EN = 0 ADC_CONV_EN = 0 SUPPLY_LPF_EN = 0                                                                   */
-    // 0x0000063E, /* 15_edit: placeholder for continuous measurement - Wait: 100 us                                                                    */
+    // 0x80020EF0, /* 15 - AFE_CFG: WAVEGEN_EN = 0 ADC_CONV_EN = 0 SUPPLY_LPF_EN = 0                                                                */  // comment this command out if CONTINUOUS_MEASUREMENT=1 and use the one below
+    0x00000000, /* 15_CONTINUOUS: placeholder for the 15th command (no need to change command count above) - Wait: 0 us                             */
     0x82000002  /* 16 - AFE_SEQ_CFG: SEQ_EN = 0                                                                                                     */
 };
+
+uint8_t restBytes = 0;
+
+/* RCAL value, in ohms                                              */
+/* Default value on ADuCM350 Switch Mux Config Board Rev.0 is 1k    */
+#define RCAL                        (1000)
+/* RTIA value, in ohms                                              */
+/* Default value on ADuCM350 Switch Mux Config Board Rev.0 is 7.5k  */
+#define RTIA                        (7500)
+
+/* Set decimation (downsampling) factor and whether to run dma transfers indefinitely */
+#define DECIMATION                  (uint8_t)(160)
+#define CONTINUOUS_MEASUREMENT      (bool_t)(1)     // sequence is stopped by sending a stop cmd (from the GUI)
+
+// TODO: remove hard-coded SAMPLE_COUNT, but set it 
+//      1) based on sequence duration, when not running in continuous mode
+//      2) > 0 is sufficient when running in continuous mode 
+/* Number of samples to be transferred by DMA, based on the duration of the sequence. */
+#define SAMPLE_COUNT                (uint32_t)(8000) // ADC_SPS / DECIMATION * DURATION = max_SAMPLE_COUNT; (ADC_SPS = 160kSPS)
+
+/* Size limit for each DMA transfer (max 1024) */
+#define DMA_BUFFER_SIZE             (1024u)  // should be a multiple of DECIMATION! else, it gets rounded to the nearest multiple
+
+/* Maximum printed message length. Used for printing only. */
+#define MSG_MAXLEN                  (50)
+
+#pragma location="nonvolatile_ram"  // RAM0 is non-volatile (see file ADuCM350BBCZ_CP.icf)
+uint16_t        dmaBuffer[DMA_BUFFER_SIZE * 2];
+
+#pragma location="volatile_ram"     // store in RAM1
+uint16_t        adc[SAMPLE_COUNT];
 
 // TODO: program sequence for the testing event
 /* Amperometric measuring sequence for the creatinine samples for the testing event */
@@ -270,7 +298,7 @@ int main(void)
             adi_AFE_EnableSoftwareCRC(hAfeDevice, true);
 
             /* Perform the Amperometric measurement(s) */
-            if (ADI_AFE_SUCCESS != adi_AFE_RunSequence(hAfeDevice, seq_afe_ampmeas, (uint16_t *) dmaBuffer, SAMPLE_COUNT)) 
+            if (ADI_AFE_SUCCESS != adi_AFE_RunSequence(hAfeDevice, seq_stepVoltage, (uint16_t *) dmaBuffer, SAMPLE_COUNT)) 
             {
                 FAIL("adi_AFE_RunSequence");   
             }
@@ -279,7 +307,7 @@ int main(void)
             // /* Turn off AFE_CFG: WAVEGEN_EN = 0, ADC_CONV_EN = 0, SUPPLY_LPF_EN = 0 (in case of continuous measurement) by running a short turn-off sequence */
             // if (CONTINUOUS_MEASUREMENT)
             // {
-            //     if (ADI_AFE_SUCCESS != adi_AFE_RunSequence(hAfeDevice, postSeq_afe_ampmeas, (uint16_t *) dmaBuffer, SAMPLE_COUNT)) 
+            //     if (ADI_AFE_SUCCESS != adi_AFE_RunSequence(hAfeDevice, postseq_stepVoltage, (uint16_t *) dmaBuffer, SAMPLE_COUNT)) 
             //     {
             //         FAIL("adi_AFE_RunSequence - post measurement");
             //     }
@@ -318,13 +346,9 @@ int main(void)
                     case CMD_STOP_CONFIG:
                         stopConfig = true;
                         break;       // refers to the loop
-                    case PARAMETERS_VOLTAGE:
+                    case PARAM_VOLTAGE_STEP:
                         rxByteSize = 4;
-                        targetParameter = &voltageLevel;
-                        break;
-                    case PARAMETERS_DUR:
-                        rxByteSize = 4;
-                        targetParameter = &voltageLevelDur;
+                        targetParameter = &voltageLevel2;
                         break;
                     
                     default:    // tried to configure a parameter that is not known
@@ -333,8 +357,8 @@ int main(void)
                         restBytes = 0;
                        
                         /* TODO: handle case where few more bytes were sent after the unknown cmd ID
-                                 the problem is, that the the while-condition adi_UART_GetNumRxBytes(hUartDevice)
-                                 gets checked faster than the bytes get received, thus skipping the read() inside
+                                 the problem is, that the while-condition adi_UART_GetNumRxBytes(hUartDevice)
+                                 gets checked faster than the bytes get received, thus skipping the read() that is inside the function;
                                  a simple wait would do the trick; currently the printf() does this by slowing the execution...
                          */
                         printf("Unknown cmd ID : %d\n", temp);
@@ -549,27 +573,23 @@ void afe_setup (void)
     }
 
     /* Set durations in ACLK periods */
-        seq_afe_ampmeas[13] = dur1 * 16;
-        seq_afe_ampmeas[15] = dur2 * 16;
-        seq_afe_ampmeas[17] = dur3 * 16;
-        seq_afe_ampmeas[19] = dur4 * 16;
+        seq_stepVoltage[13] = dur1 * 16;
+        seq_stepVoltage[15] = dur2 * 16;
+        seq_stepVoltage[17] = dur3 * 16;
+        seq_stepVoltage[19] = dur4 * 16;
         
-        // If needed, wait before turning off ADC_CONV_EN in the sequencer
-        // seq_afe_ampmeas[20] = 0.05*(DURL1 + DURL2) * 16; // wait 5% of the total measurement duration
-                                                         // to make sure the dma transfers are complete
 
-    // TODO: remove hard coded indexing in the sequence array; ideally use seq_afe_ampmeas[V_ind]=SEQ_MMR_WRITE(...) for modifying the voltage
+    // TODO: remove hard coded indexing in the sequence array; ideally use seq_stepVoltage[V_ind]=SEQ_MMR_WRITE(...) for modifying the voltage
     /* Set DAC Level 1 */
-    voltageLevel_DAC = ((uint32_t)(((float)voltageLevel / (float)DAC_LSB_SIZE) + 0x800));
-    seq_afe_ampmeas[4]  = SEQ_MMR_WRITE(REG_AFE_AFE_WG_DAC_CODE, voltageLevel_DAC);
+    seq_stepVoltage[4]  = SEQ_MMR_WRITE(REG_AFE_AFE_WG_DAC_CODE, DACL1);
     /* Set DAC Level 2 */
-    voltageLevel2_DAC = ((uint32_t)(((float)voltageLevel2 / (float)DAC_LSB_SIZE) + 0x800));
-    seq_afe_ampmeas[16] = SEQ_MMR_WRITE(REG_AFE_AFE_WG_DAC_CODE, voltageLevel2_DAC);
+    voltageLevel2_DAC = ((uint32_t)(((float)voltageLevel2 / (float)DAC_LSB_SIZE) + 0x800)); // update value
+    seq_stepVoltage[16] = SEQ_MMR_WRITE(REG_AFE_AFE_WG_DAC_CODE, voltageLevel2_DAC);
     
     if (!SHUNTREQD)
     {
         /* IVS switch remains open */
-        seq_afe_ampmeas[14] &= 0xFFFEFFFF;
+        seq_stepVoltage[14] &= 0xFFFEFFFF;
     }
 
     /*  DMA configuration */    
