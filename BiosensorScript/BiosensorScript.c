@@ -87,7 +87,7 @@ uint32_t seq_stepVoltage[] = {
     0x86006655,   /* 18 - IVS_STATE = 0 (open IVS switch)                                                   */
     0x00000000,   /* 19 - Wait: (DAC Level 2 duration - IVS duration 2) (placeholder, user programmable)    */
 //    0x80020EF0,   /* 20 - AFE_CFG: WAVEGEN_EN = 0, ADC_CONV_EN = 0, SUPPLY_LPF_EN = 0                     */   // comment this command out if CONTINUOUS_MEASUREMENT=1 and use the one below
-    0x00000000,   /* 20_CONTINUOUS - Wait: finish DMA transfers (placeholder, programmed below)             */
+    0x00000000,   /* 20_CONTINUOUS - placeholder for the 20th command (no need to change command count above) - Wait: 0 us             */
     0x82000002,   /* 21 - AFE_SEQ_CFG: SEQ_EN = 0                                                           */
 };
 
@@ -174,6 +174,17 @@ const uint32_t seq_cv[] = {
     0x82000002  /* 16 - AFE_SEQ_CFG: SEQ_EN = 0                                                                                                     */
 };
 
+/* 
+    Sequence for turning off the wave generator, adc conversion and LPF.
+    Called when a measurement in continuous mode is stopped.
+*/
+uint32_t seq_turnOff[] = {
+    0x00030065,   /*  0 - Safety Word, Command Count = 15, CRC = 0x1C                                       */  // adjust command count accordingly!
+    0x80020EF0,   /* 1 - AFE_CFG: WAVEGEN_EN = 0, ADC_CONV_EN = 0, SUPPLY_LPF_EN = 0                        */
+    0x00000C80,   /* 2 - Wait: 200us                                                                        */
+    0x82000002,   /* 3 - AFE_SEQ_CFG: SEQ_EN = 0                                                            */
+};
+
 uint8_t restBytes = 0;
 
 /* RCAL value, in ohms                                              */
@@ -242,6 +253,7 @@ void                    test_print                  (char *pBuffer);
 ADI_UART_RESULT_TYPE    uart_setup                  (void);
 ADI_UART_RESULT_TYPE    uart_UnInit                 (void);
 void                    afe_setup                   (void);
+void                    seq_stepVoltage_setup       (void);
 void                    afe_postMeasurement         (void);
 extern int32_t          adi_initpinmux              (void);
 void        RxDmaCB         (void *hAfeDevice, 
@@ -288,11 +300,14 @@ int main(void)
             test_Fail("adi_UART_BufRx() failed");
         }
 
-        if (cmdRx[0] == CMD_START)
+        if (cmdRx[0] == CMD_START_CONST)
         {
 
             /* Setup AFE before running the sequence */
             afe_setup();
+
+            /* Set sequence-specific programmable parameters */
+            seq_stepVoltage_setup();
             
             /* Recalculate CRC in software for the amperometric measurement */
             adi_AFE_EnableSoftwareCRC(hAfeDevice, true);
@@ -303,15 +318,47 @@ int main(void)
                 FAIL("adi_AFE_RunSequence");   
             }
 
-            // TODO:
-            // /* Turn off AFE_CFG: WAVEGEN_EN = 0, ADC_CONV_EN = 0, SUPPLY_LPF_EN = 0 (in case of continuous measurement) by running a short turn-off sequence */
-            // if (CONTINUOUS_MEASUREMENT)
-            // {
-            //     if (ADI_AFE_SUCCESS != adi_AFE_RunSequence(hAfeDevice, postseq_stepVoltage, (uint16_t *) dmaBuffer, SAMPLE_COUNT)) 
-            //     {
-            //         FAIL("adi_AFE_RunSequence - post measurement");
-            //     }
-            // }
+            /* Turn off AFE_CFG: WAVEGEN_EN = 0, ADC_CONV_EN = 0, SUPPLY_LPF_EN = 0 (in case of continuous measurement) by running a short turn-off sequence */
+            if (CONTINUOUS_MEASUREMENT)
+            {
+                if (ADI_AFE_SUCCESS != adi_AFE_RunSequence(hAfeDevice, seq_turnOff, (uint16_t *) dmaBuffer, 0))
+                {
+                    FAIL("adi_AFE_RunSequence - turn off");
+                }
+            }
+
+            /* Restore to using default CRC stored with the sequence */
+            adi_AFE_EnableSoftwareCRC(hAfeDevice, false);
+            
+            /* Post measurement AFE deregistering */
+            afe_postMeasurement();
+        }
+        else if (cmdRx[0] == CMD_START_CV)
+        {
+
+            /* Setup AFE before running the sequence */
+            afe_setup();
+
+            /* Set sequence-specific programmable parameters */
+            // seq_cv_setup();
+            
+            /* Recalculate CRC in software for the amperometric measurement */
+            adi_AFE_EnableSoftwareCRC(hAfeDevice, true);
+
+            /* Perform the Amperometric measurement(s) */
+            if (ADI_AFE_SUCCESS != adi_AFE_RunSequence(hAfeDevice, seq_cv, (uint16_t *) dmaBuffer, SAMPLE_COUNT)) 
+            {
+                FAIL("adi_AFE_RunSequence");   
+            }
+
+            /* Turn off AFE_CFG: WAVEGEN_EN = 0, ADC_CONV_EN = 0, SUPPLY_LPF_EN = 0 (in case of continuous measurement) by running a short turn-off sequence */
+            if (CONTINUOUS_MEASUREMENT)
+            {
+                if (ADI_AFE_SUCCESS != adi_AFE_RunSequence(hAfeDevice, seq_turnOff, (uint16_t *) dmaBuffer, 0))
+                {
+                    FAIL("adi_AFE_RunSequence - turn off");
+                }
+            }
 
             /* Restore to using default CRC stored with the sequence */
             adi_AFE_EnableSoftwareCRC(hAfeDevice, false);
@@ -547,9 +594,27 @@ void afe_setup (void)
     {
             FAIL("adi_AFE_ExciteChanCalNoAtten");
     }
-    
 
-    /* Amperometric Measurement */
+    /*  DMA configuration */    
+#if (ADI_AFE_CFG_ENABLE_RX_DMA_DUAL_BUFFER_SUPPORT == 1)   
+    /* Set the Rx DMA buffer sizes */
+    if (ADI_AFE_SUCCESS != adi_AFE_SetDmaRxBufferMaxSize(hAfeDevice, DMA_BUFFER_SIZE, DMA_BUFFER_SIZE))
+    {
+        FAIL("adi_AFE_SetDmaRxBufferMaxSize");
+    }
+#endif /* ADI_AFE_CFG_ENABLE_RX_DMA_DUAL_BUFFER_SUPPORT == 1 */
+    
+    /* Register Rx DMA Callback */
+    if (ADI_AFE_SUCCESS != adi_AFE_RegisterCallbackOnReceiveDMA(hAfeDevice, RxDmaCB, 0))
+    {
+        FAIL("adi_AFE_RegisterCallbackOnReceiveDMA");
+    }
+
+}
+
+/* Set sequence-specific programmable parameters */
+void seq_stepVoltage_setup(void)
+{
     /* Set the user programmable portions of the sequence */
     /* Set the duration values */
     uint32_t            dur1;
@@ -591,22 +656,6 @@ void afe_setup (void)
         /* IVS switch remains open */
         seq_stepVoltage[14] &= 0xFFFEFFFF;
     }
-
-    /*  DMA configuration */    
-#if (ADI_AFE_CFG_ENABLE_RX_DMA_DUAL_BUFFER_SUPPORT == 1)   
-    /* Set the Rx DMA buffer sizes */
-    if (ADI_AFE_SUCCESS != adi_AFE_SetDmaRxBufferMaxSize(hAfeDevice, DMA_BUFFER_SIZE, DMA_BUFFER_SIZE))
-    {
-        FAIL("adi_AFE_SetDmaRxBufferMaxSize");
-    }
-#endif /* ADI_AFE_CFG_ENABLE_RX_DMA_DUAL_BUFFER_SUPPORT == 1 */
-    
-    /* Register Rx DMA Callback */
-    if (ADI_AFE_SUCCESS != adi_AFE_RegisterCallbackOnReceiveDMA(hAfeDevice, RxDmaCB, 0))
-    {
-        FAIL("adi_AFE_RegisterCallbackOnReceiveDMA");
-    }
-
 }
 
 /* Power down, un-initialization and deregistering needed for AFE after the measurement */

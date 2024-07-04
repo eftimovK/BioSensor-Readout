@@ -9,9 +9,10 @@
 #ifndef __COMMAND_ID__
 #define __COMMAND_ID__
 
-/* Set codes for commands that are received through UART (e.g. by a GUI)              */
-#define CMD_START   1   /*!< measurement start */
-#define CMD_STOP    0   /*!< measurement stop */
+/* Set codes for commands that are received through UART (e.g. sent by a GUI)   */
+#define CMD_START_CONST   1   /*!< start measurement with const voltage excitation            */
+#define CMD_START_CV      2   /*!< start measurement with cyclic voltammetry (CV) excitation  */
+#define CMD_STOP    0         /*!< stop measurement */
 #define CMD_START_CONFIG  5
 #define CMD_STOP_CONFIG   6
 #define CMD_ABORT  -1
