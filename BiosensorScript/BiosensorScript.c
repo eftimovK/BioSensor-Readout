@@ -176,7 +176,7 @@ uint32_t    voltageLevel2_DAC = ((uint32_t)(((float)0 / (float)DAC_LSB_SIZE) + 0
             REF- == AFE2
             WE   == AFE3
 
- */
+*/
 uint32_t seq_cv[] = {
     0x001000B4, /*  0 - Safety Word, Command Count = 16, CRC = 0xB4                                                                                 */
     0x84003818, /*  1 - AFE_FIFO_CFG: DATA_FIFO_DMA_REQ_EN = 1 DATA_FIFO_SOURCE_SEL = 0b01 (ADC) CMD_FIFO_DMA_REQ_EN = 1 CMD_FIFO_EN = 1 DATA_FIFO_EN = 1 */
@@ -227,6 +227,74 @@ uint32_t   voltageLevelCV1_DAC = ((uint32_t)(((float)0 / (float)DAC_LSB_SIZE) + 
 /* DC Level 1 in DAC codes */
 uint32_t   voltageLevelCV2_DAC = ((uint32_t)(((float)0 / (float)DAC_LSB_SIZE) + 0x800));
 
+/* AC sinusoidal excitation (used for impedance spectroscopy); adapted from the impedance measurement example
+
+    Configurable parameters from GUI: 
+        Frequency       [Hz]
+        Voltage         [mV]
+        
+    Configurable parameters from macros (in this script):
+        Duration        [us]
+
+    Important hard-coded settings:
+        ADC output (DATA_FIFO_SOURCE_SEL = 0b01)
+        4-wire electrode pins: (see switch matrix command)
+            CE   == AFE4
+            REF+ == AFE4
+            REF- == AFE5
+            WE   == AFE5
+
+*/
+uint32_t seq_ac[] = {
+    0x00130043,   /* 0 - Safety word: bits 31:16 = command count, bits 7:0 = CRC */
+    0x84005818,   /* 1 - AFE_FIFO_CFG: DATA_FIFO_SOURCE_SEL = 10 (DFT) */
+    0x8A000034,   /* 2 - AFE_WG_CFG: TYPE_SEL = 10 (sinusoid) */
+    0x98000000,   /* 3 - AFE_WG_CFG: SINE_FCW = 0 (placeholder, user programmable) */
+    0x9E000000,   /* 4 - AFE_WG_AMPLITUDE: SINE_AMPLITUDE = 0 (placeholder, user programmable) */
+    0x88000F01,   /* 5 - AFE_DAC_CFG: DAC_ATTEN_EN = 1 */
+    0xA0000002,   /* 6 - AFE_ADC_CFG: MUX_SEL = 00010, GAIN_OFFS_SEL = 00 */
+    /* RCAL (needed for calibration) */
+    0x86008811,   /* 7 - DMUX_STATE = 1, PMUX_STATE = 1, NMUX_STATE = 8, TMUX_STATE = 8 */
+    0x00000640,   /* 8 - Wait 100us */
+    0x80024EF0,   /* 9 - AFE_CFG: WAVEGEN_EN = 1 */
+    0x00000C80,   /* 10 - Wait 200us */
+    0x8002CFF0,   /* 11 - AFE_CFG: ADC_CONV_EN = 1, DFT_EN = 1 */
+    0x00032340,   /* 12 - Wait 13ms */
+    0x80024EF0,   /* 13 - AFE_CFG: ADC_CONV_EN = 0, DFT_EN = 0 */
+    /* AFE4 - AFE5 */
+    0x86004455,   /* 14 - DMUX_STATE = 4, PMUX_STATE = 4, NMUX_STATE = 5, TMUX_STATE = 5 */
+    0x00000640,   /* 15 - Wait 100us */
+    0x8002CFF0,   /* 16 - AFE_CFG: ADC_CONV_EN = 1, DFT_EN = 1 */
+    0x00032340,   /* 17 - Wait: (AC signal duration) (placeholder, user programmable)    */
+    0x80020EF0,   /* 18 - AFE_CFG: WAVEGEN_EN = 0, ADC_CONV_EN = 0, DFT_EN = 0 */
+
+    0x82000002,   /* 19 - AFE_SEQ_CFG: SEQ_EN = 0 */
+};
+
+/* 
+    Configurable parameters from macros (in this script)
+*/
+/* The duration (in us) of the AC excitation signal */
+#define DURAC                              ((uint32_t)(10000000))
+
+/* 
+    Configurable variables from GUI
+*/
+/* AC peak voltage level in mV (range: 0 mV to 20 mV) */
+int32_t    voltageLevelAC = 15;
+/* AC signal frequency in Hz (range: 100 Hz to 80 kHz) */
+int32_t    signalFrequencyAC = 1000;
+
+/* Sine amplitude in DAC codes */
+uint32_t  voltageLevelAC_DAC = ((uint32_t)((0 * 40) / DAC_LSB_SIZE + 0.5)); // TODO: explain this equation
+/* FCW = FREQ * 2^26 / 16e6 */
+uint32_t signalFrequencyAC_SEQ = ((uint32_t)(((uint64_t)0 << 26) / 16000000 + 0.5));
+
+/* Stop frequency of impedance spectroscopy (range: signalFrequencyAC to 80 kHz) */
+int32_t    stopFrequencyEIS = 2000;
+/* Step frequency of impedance spectroscopy (range: Hz to Hz) */
+int32_t    stepFrequencyEIS = 200;
+
 /* 
     Sequence for turning off the wave generator, adc conversion and LPF.
     Called when a measurement in continuous mode is stopped.
@@ -256,6 +324,9 @@ uint8_t restBytes = 0;
 //      2) > 0 is sufficient when running in continuous mode 
 /* Number of samples to be transferred by DMA, based on the duration of the sequence. */
 #define SAMPLE_COUNT                (uint32_t)(8000) // ADC_SPS / DECIMATION * DURATION = max_SAMPLE_COUNT; (ADC_SPS = 160kSPS)
+
+/* The number of results expected from the DFT (== number of complex results times two) */
+#define DFT_RESULTS_COUNT           (4)
 
 /* Size limit for each DMA transfer (max 1024) */
 #define DMA_BUFFER_SIZE             (1024u)  // should be a multiple of DECIMATION! else, it gets rounded to the nearest multiple
@@ -306,8 +377,10 @@ void                    test_print                  (char *pBuffer);
 ADI_UART_RESULT_TYPE    uart_setup                  (void);
 ADI_UART_RESULT_TYPE    uart_UnInit                 (void);
 void                    afe_setup                   (void);
+void                    afe_ac_setup                (void);
 void                    seq_stepVoltage_setup       (void);
 void                    seq_cv_setup                (void);
+void                    seq_ac_setup                (void);
 void                    afe_postMeasurement         (void);
 extern int32_t          adi_initpinmux              (void);
 void        RxDmaCB         (void *hAfeDevice, 
@@ -317,6 +390,7 @@ void        RxDmaCB         (void *hAfeDevice,
 int main(void) 
 {
     bool_t              stopProgram = 0;
+    int16_t             dft_results[DFT_RESULTS_COUNT];
     
     /* Initialize system */
     SystemInit();
@@ -341,6 +415,8 @@ int main(void)
         FAIL("uart_setup");
     }
 
+    // TODO:
+    /* Set initial values for global variables explicitly */
     
     while(!stopProgram)
     {
@@ -369,7 +445,7 @@ int main(void)
             /* Perform the Amperometric measurement(s) */
             if (ADI_AFE_SUCCESS != adi_AFE_RunSequence(hAfeDevice, seq_stepVoltage, (uint16_t *) dmaBuffer, SAMPLE_COUNT)) 
             {
-                FAIL("adi_AFE_RunSequence");   
+                FAIL("adi_AFE_RunSequence - step voltage excitation");   
             }
 
             /* Turn off AFE_CFG: WAVEGEN_EN = 0, ADC_CONV_EN = 0, SUPPLY_LPF_EN = 0 (in case of continuous measurement) by running a short turn-off sequence */
@@ -402,7 +478,7 @@ int main(void)
             /* Perform the Amperometric measurement(s) */
             if (ADI_AFE_SUCCESS != adi_AFE_RunSequence(hAfeDevice, seq_cv, (uint16_t *) dmaBuffer, SAMPLE_COUNT)) 
             {
-                FAIL("adi_AFE_RunSequence");   
+                FAIL("adi_AFE_RunSequence - cv excitation");   
             }
 
             /* Turn off AFE_CFG: WAVEGEN_EN = 0, ADC_CONV_EN = 0, SUPPLY_LPF_EN = 0 (in case of continuous measurement) by running a short turn-off sequence */
@@ -412,6 +488,49 @@ int main(void)
                 {
                     FAIL("adi_AFE_RunSequence - turn off");
                 }
+            }
+
+            /* Restore to using default CRC stored with the sequence */
+            adi_AFE_EnableSoftwareCRC(hAfeDevice, false);
+            
+            /* Post measurement AFE deregistering */
+            afe_postMeasurement();
+        }
+        else if (cmdRx[0] == CMD_START_EIS)
+        {
+            /* Setup AFE before running the sequence */
+            afe_ac_setup();    // the AC sequence needs a different AFE setup
+
+            /* Set sequence-specific programmable parameters */
+            seq_ac_setup();
+            
+            /* Recalculate CRC in software for the amperometric measurement */
+            adi_AFE_EnableSoftwareCRC(hAfeDevice, true);
+
+            while (signalFrequencyAC < stopFrequencyEIS)
+            {
+                /* Perform the Impedance measurement */
+                if (ADI_AFE_SUCCESS != adi_AFE_RunSequence(hAfeDevice, seq_ac, (uint16_t *)dft_results, DFT_RESULTS_COUNT)) 
+                {
+                    FAIL("adi_AFE_RunSequence - ac excitation");   
+                }
+
+                // Send data to UART (raw DFT data which will be processed in the GUI)
+                char                    temp[MSG_MAXLEN];
+                sprintf(temp, "%d\r\n", signalFrequencyAC );
+                PRINT(temp);
+                sprintf(temp, "%d\r\n", dft_results[0] );   // RCAL real part
+                PRINT(temp);
+                sprintf(temp, "%d\r\n", dft_results[1] );   // RCAL imaginary part
+                PRINT(temp);
+                sprintf(temp, "%d\r\n", dft_results[2] );
+                PRINT(temp);
+                sprintf(temp, "%d\r\n", dft_results[3] );
+                PRINT(temp);
+
+                // increment frequency and update it in the sequence
+                signalFrequencyAC += stepFrequencyEIS;
+                seq_ac_setup();
             }
 
             /* Restore to using default CRC stored with the sequence */
@@ -678,6 +797,72 @@ void afe_setup (void)
 
 }
 
+/* Initialize, configure, and enable/power-up the AFE for the AC measurement sequence */
+void afe_ac_setup (void)
+{
+    /* Initialize the AFE API */
+    if (ADI_AFE_SUCCESS != adi_AFE_Init(&hAfeDevice)) 
+    {
+        FAIL("Init");
+    }
+
+    /* Set RCAL Value */
+    if (ADI_AFE_SUCCESS != adi_AFE_SetRcal(hAfeDevice, RCAL))
+    {
+        FAIL("Set RCAL");
+    }
+
+    /* Set RTIA Value */
+    if (ADI_AFE_SUCCESS != adi_AFE_SetRtia(hAfeDevice, RTIA))
+    {
+        FAIL("Set RTIA");
+    }
+    
+    /* Remove decimation (using DFT results) */
+    if (ADI_AFE_SUCCESS != adi_AFE_SetDecFactor(hAfeDevice, 1))
+    {
+        FAIL("Set decFactor");
+    }
+
+    /* Set finite (non-continuous) measurement */
+    if (ADI_AFE_SUCCESS != adi_AFE_SetIndefiniteMeasurement(hAfeDevice, false))
+    {
+        FAIL("Set indefiniteMeasurement");
+    }
+
+    /* AFE power up */
+    if (ADI_AFE_SUCCESS != adi_AFE_PowerUp(hAfeDevice)) 
+    {
+        FAIL("PowerUp");
+    }
+
+    /* Excitation Channel Power-Up */
+    if (ADI_AFE_SUCCESS != adi_AFE_ExciteChanPowerUp(hAfeDevice)) 
+    {
+        FAIL("ExciteChanCalAtten");
+    }
+
+    /* TIA Channel Calibration */
+    if (ADI_AFE_SUCCESS != adi_AFE_TiaChanCal(hAfeDevice)) 
+    {
+        FAIL("TiaChanCal");
+    }
+
+    /* Excitation Channel Calibration (Attenuation Enabled) */
+    if (ADI_AFE_SUCCESS != adi_AFE_ExciteChanCalAtten(hAfeDevice)) 
+    {
+        FAIL("adi_AFE_ExciteChanCalAtten");
+    }
+
+    /* No DMA configuration needed ? */    
+    
+    /* Unregister Rx DMA Callback */
+    if (ADI_AFE_SUCCESS != adi_AFE_RegisterCallbackOnReceiveDMA(hAfeDevice, NULL, 0))
+    {
+        FAIL("adi_AFE_RegisterCallbackOnReceiveDMA (unregister)");
+    }
+}
+
 /* Set sequence-specific programmable parameters */
 void seq_stepVoltage_setup(void)
 {
@@ -749,6 +934,25 @@ void seq_cv_setup(void)
     /* Set DAC Level 2 */
     voltageLevelCV2_DAC = ((uint32_t)(((float)voltageLevelCV2 / (float)DAC_LSB_SIZE) + 0x800)); // update value
     seq_cv[4] = SEQ_MMR_WRITE(REG_AFE_AFE_WG_DCLEVEL_2, voltageLevelCV2_DAC);
+}
+
+/* Set sequence-specific programmable parameters */
+void seq_ac_setup(void)
+{
+    /* Set the user programmable portions of the sequence */
+    
+    // TODO: remove hard coded indexing in the sequence array; e.g. use seq_ac[V_ind]=SEQ_MMR_WRITE(...) for modifying the voltage
+            
+    /* Set duration of signal in ACLK periods */
+    seq_ac[17] = DURAC * 16;
+
+    /* Set voltage level (amplitude) */
+    voltageLevelAC_DAC = ((uint16_t)((voltageLevelAC * 40) / DAC_LSB_SIZE + 0.5));
+    seq_ac[4] = SEQ_MMR_WRITE(REG_AFE_AFE_WG_AMPLITUDE, voltageLevelAC_DAC);
+
+    /* Set frequency of sinusoid     */
+    signalFrequencyAC_SEQ = ((uint32_t)(((uint64_t)(signalFrequencyAC) << 26) / 16000000 + 0.5));
+    seq_ac[3] = SEQ_MMR_WRITE(REG_AFE_AFE_WG_FCW, signalFrequencyAC_SEQ);
 }
 
 /* Power down, un-initialization and deregistering needed for AFE after the measurement */
