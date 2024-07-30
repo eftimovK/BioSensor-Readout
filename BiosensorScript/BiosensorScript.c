@@ -256,8 +256,8 @@ uint32_t seq_ac[] = {
     /* RCAL (needed for calibration) */
     0x86008811,   /* 7 - DMUX_STATE = 1, PMUX_STATE = 1, NMUX_STATE = 8, TMUX_STATE = 8 */
     0x00000640,   /* 8 - Wait 100us */
-    0x80024EF0,   /* 9 - AFE_CFG: WAVEGEN_EN = 1 */
-    0x00000C80,   /* 10 - Wait 200us */
+    0x80034EF0,   /* 9 - AFE_CFG: WAVEGEN_EN = 1, SUPPLY_LPF_EN = 1 */
+    0x00090880,   /* 10 - Wait: 37ms  for LPF settling                                                      */
     0x8002CFF0,   /* 11 - AFE_CFG: ADC_CONV_EN = 1, DFT_EN = 1 */
     0x00032340,   /* 12 - Wait 13ms */
     0x80024EF0,   /* 13 - AFE_CFG: ADC_CONV_EN = 0, DFT_EN = 0 */
@@ -266,7 +266,7 @@ uint32_t seq_ac[] = {
     0x00000640,   /* 15 - Wait 100us */
     0x8002CFF0,   /* 16 - AFE_CFG: ADC_CONV_EN = 1, DFT_EN = 1 */
     0x00032340,   /* 17 - Wait: (AC signal duration) (placeholder, user programmable)    */
-    0x80020EF0,   /* 18 - AFE_CFG: WAVEGEN_EN = 0, ADC_CONV_EN = 0, DFT_EN = 0 */
+    0x80020EF0,   /* 18 - AFE_CFG: WAVEGEN_EN = 0, ADC_CONV_EN = 0, DFT_EN = 0, SUPPLY_LPF_EN = 0 */
 
     0x82000002,   /* 19 - AFE_SEQ_CFG: SEQ_EN = 0 */
 };
@@ -275,7 +275,7 @@ uint32_t seq_ac[] = {
     Configurable parameters from macros (in this script)
 */
 /* The duration (in us) of the AC excitation signal */
-#define DURAC                              ((uint32_t)(10000000))
+#define DURAC                              ((uint32_t)(500000))
 
 /* 
     Configurable variables from GUI
@@ -290,7 +290,9 @@ uint32_t  voltageLevelAC_DAC = ((uint32_t)((0 * 40) / DAC_LSB_SIZE + 0.5)); // T
 /* FCW = FREQ * 2^26 / 16e6 */
 uint32_t signalFrequencyAC_SEQ = ((uint32_t)(((uint64_t)0 << 26) / 16000000 + 0.5));
 
-/* Stop frequency of impedance spectroscopy (range: signalFrequencyAC to 80 kHz) */
+/* Start frequency of impedance spectroscopy (range: 100 Hz to 80 kHz) */
+int32_t    startFrequencyEIS = 1000;
+/* Stop frequency of impedance spectroscopy (range: startFrequencyEIS to 80 kHz) */
 int32_t    stopFrequencyEIS = 2000;
 /* Step frequency of impedance spectroscopy (range: Hz to Hz) */
 int32_t    stepFrequencyEIS = 200;
@@ -501,14 +503,16 @@ int main(void)
             /* Setup AFE before running the sequence */
             afe_ac_setup();    // the AC sequence needs a different AFE setup
 
-            /* Set sequence-specific programmable parameters */
-            seq_ac_setup();
-            
             /* Recalculate CRC in software for the amperometric measurement */
             adi_AFE_EnableSoftwareCRC(hAfeDevice, true);
 
+            signalFrequencyAC = startFrequencyEIS;
+
             while (signalFrequencyAC < stopFrequencyEIS)
             {
+                /* Set sequence-specific programmable parameters */
+                seq_ac_setup(); // update frequency in the sequence
+
                 /* Perform the Impedance measurement */
                 if (ADI_AFE_SUCCESS != adi_AFE_RunSequence(hAfeDevice, seq_ac, (uint16_t *)dft_results, DFT_RESULTS_COUNT)) 
                 {
@@ -528,9 +532,8 @@ int main(void)
                 sprintf(temp, "%d\r\n", dft_results[3] );
                 PRINT(temp);
 
-                // increment frequency and update it in the sequence
+                // increment frequency
                 signalFrequencyAC += stepFrequencyEIS;
-                seq_ac_setup();
             }
 
             /* Restore to using default CRC stored with the sequence */
@@ -581,6 +584,22 @@ int main(void)
                     case PARAM_SLOPE_CV:
                         rxByteSize = 4;
                         targetParameter = &slopeTimeCV;
+                        break;
+                    case PARAM_VOLTAGE_AC:
+                        rxByteSize = 4;
+                        targetParameter = &voltageLevelAC;
+                        break;
+                    case PARAM_START_FREQ_EIS:
+                        rxByteSize = 4;
+                        targetParameter = &startFrequencyEIS;
+                        break;
+                    case PARAM_STOP_FREQ_EIS:
+                        rxByteSize = 4;
+                        targetParameter = &stopFrequencyEIS;
+                        break;
+                    case PARAM_STEP_FREQ_EIS:
+                        rxByteSize = 4;
+                        targetParameter = &stepFrequencyEIS;
                         break;
                     
                     default:    // tried to configure a parameter that is not known
