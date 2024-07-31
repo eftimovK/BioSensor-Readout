@@ -275,18 +275,18 @@ uint32_t seq_ac[] = {
     Configurable parameters from macros (in this script)
 */
 /* The duration (in us) of the AC excitation signal */
-#define DURAC                              ((uint32_t)(500000))
+#define DURAC                              ((uint32_t)(1000000)) // TODO: set minimum of AC duration correctly 
 
 /* 
     Configurable variables from GUI
 */
-/* AC peak voltage level in mV (range: 0 mV to 20 mV) */
-int32_t    voltageLevelAC = 15;
+/* AC peak voltage level in uV (range: 10 uV to 20 000 uV) */
+int32_t    voltageLevelAC = 1000;
 /* AC signal frequency in Hz (range: 100 Hz to 80 kHz) */
 int32_t    signalFrequencyAC = 1000;
 
 /* Sine amplitude in DAC codes */
-uint32_t  voltageLevelAC_DAC = ((uint32_t)((0 * 40) / DAC_LSB_SIZE + 0.5)); // TODO: explain this equation
+uint32_t  voltageLevelAC_DAC = ((uint32_t)((float)(0 * 40) / 1000 / DAC_LSB_SIZE + 0.5)); // TODO: explain this equation
 /* FCW = FREQ * 2^26 / 16e6 */
 uint32_t signalFrequencyAC_SEQ = ((uint32_t)(((uint64_t)0 << 26) / 16000000 + 0.5));
 
@@ -533,7 +533,7 @@ int main(void)
                 PRINT(temp);
 
                 // increment frequency
-                signalFrequencyAC += stepFrequencyEIS;
+                signalFrequencyAC += stepFrequencyEIS;  // TODO: increase logarithmically
             }
 
             /* Restore to using default CRC stored with the sequence */
@@ -966,7 +966,7 @@ void seq_ac_setup(void)
     seq_ac[17] = DURAC * 16;
 
     /* Set voltage level (amplitude) */
-    voltageLevelAC_DAC = ((uint16_t)((voltageLevelAC * 40) / DAC_LSB_SIZE + 0.5));
+    voltageLevelAC_DAC = ((uint16_t)((float)(voltageLevelAC * 40) / 1000 / DAC_LSB_SIZE + 0.5));    // divide by 1000 to get to mV
     seq_ac[4] = SEQ_MMR_WRITE(REG_AFE_AFE_WG_AMPLITUDE, voltageLevelAC_DAC);
 
     /* Set frequency of sinusoid     */
