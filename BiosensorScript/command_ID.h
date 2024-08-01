@@ -28,4 +28,9 @@
 #define PARAM_STOP_FREQ_EIS    106  /*!< Set stop (final) frequency for EIS    */
 #define PARAM_STEP_FREQ_EIS    107  /*!< Set step frequency for EIS            */
 
+/* IDs of commands sent from the microcontroller (to GUI) */
+#define DATA_MEAS_CONST         1   /*!< Measurement data is from const voltage excitation  */
+#define DATA_MEAS_CV            2   /*!< Measurement data is from cv excitation             */
+#define DATA_MEAS_EIS           3   /*!< Measurement data is from EIS                       */
+
 #endif /* __COMMAND_ID__ */
