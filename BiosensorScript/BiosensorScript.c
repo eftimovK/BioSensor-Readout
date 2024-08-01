@@ -520,16 +520,10 @@ int main(void)
                 }
 
                 // Send data to UART (raw DFT data which will be processed in the GUI)
+                // dft_results[0] == RCAL real part
+                // dft_results[1] == RCAL imaginary part
                 char                    temp[MSG_MAXLEN];
-                sprintf(temp, "%d\r\n", signalFrequencyAC );
-                PRINT(temp);
-                sprintf(temp, "%d\r\n", dft_results[0] );   // RCAL real part
-                PRINT(temp);
-                sprintf(temp, "%d\r\n", dft_results[1] );   // RCAL imaginary part
-                PRINT(temp);
-                sprintf(temp, "%d\r\n", dft_results[2] );
-                PRINT(temp);
-                sprintf(temp, "%d\r\n", dft_results[3] );
+                sprintf(temp, "%d:%d:%d:%d:%d:%d\r\n", DATA_MEAS_EIS, signalFrequencyAC, dft_results[0], dft_results[1], dft_results[2], dft_results[3] );
                 PRINT(temp);
 
                 // increment frequency
@@ -713,7 +707,7 @@ void RxDmaCB(void *hAfeDevice, uint32_t length, void *pBuffer)
             
             if (decCounter == DECIMATION)
             {
-                sprintf(msg, "%u\r\n", (uint16_t)(adc_sum / DECIMATION));
+                sprintf(msg, "%d:%u\r\n", DATA_MEAS_CONST, (uint16_t)(adc_sum / DECIMATION));
                 PRINT(msg);
                 adc_sum = 0;
                 decCounter = 0;
