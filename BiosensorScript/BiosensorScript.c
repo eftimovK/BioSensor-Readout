@@ -72,19 +72,19 @@ uint32_t seq_stepVoltage[] = {
     0xAA000800,   /*  4 - AFE_WG_DAC_CODE: DAC_CODE = 0x800 (DAC Level 1 placeholder, user programmable)    */
     0xA0000002,   /*  5 - AFE_ADC_CFG: MUX_SEL = 0b00010, GAIN_OFFS_SEL = 0b00 (TIA)                        */
     0xA2000000,   /*  6 - AFE_SUPPLY_LPF_CFG: BYPASS_SUPPLY_LPF = 0 (do not bypass)                         */
-    0x86003267,   /*  7_(4-wire) - AFE_SW_CFG: DMUX_STATE = 7 PMUX_STATE = 6 NMUX_STATE = 2 TMUX_STATE = 3  */
-    // 0x86006655,   /*  7_(2-wire) - DMUX_STATE = 5, PMUX_STATE = 5, NMUX_STATE = 6, TMUX_STATE = 6           */
+    // 0x86003456,   /*  7_(4-wire) - AFE_SW_CFG: DMUX_STATE = 6 PMUX_STATE = 5 NMUX_STATE = 4 TMUX_STATE = 3  */
+    0x86003366,   /*  7_(2-wire) - DMUX_STATE = 6, PMUX_STATE = 6, NMUX_STATE = 3, TMUX_STATE = 3           */  // pins should be same as for IVS switch below
     0x0001A900,   /*  8 - Wait: 6.8ms (based on load RC = 6.8kOhm * 1uF)                                    */
     0x80024EF0,   /*  9 - AFE_CFG: WG_EN = 1                                                                */
     0x00000C80,   /* 10 - Wait: 200us                                                                       */
     0x80034FF0,   /* 11 - AFE_CFG: ADC_CONV_EN = 1, SUPPLY_LPF_EN = 1                                       */
     0x00090880,   /* 12 - Wait: 37ms  for LPF settling                                                      */
     0x00000000,   /* 13 - Wait: (DAC Level 1 duration - IVS duration 1) (placeholder, user programmable)    */
-    0x86016655,   /* 14 - IVS_STATE = 1 (close IVS switch, user programmable)                               */
+    0x86013366,   /* 14 - IVS_STATE = 1 (close IVS switch, user programmable)                               */
     0x00000000,   /* 15 - Wait: IVS duration 1 (placeholder, user programmable)                             */
     0xAA000800,   /* 16 - AFE_WG_DAC_CODE: DAC_CODE = 0x800 (DAC Level 2 placeholder, user programmable)    */
     0x00000000,   /* 17 - Wait: IVS duration 2 (placeholder, user programmable)                             */
-    0x86006655,   /* 18 - IVS_STATE = 0 (open IVS switch)                                                   */
+    0x86003366,   /* 18 - IVS_STATE = 0 (open IVS switch)                                                   */
     0x00000000,   /* 19 - Wait: (DAC Level 2 duration - IVS duration 2) (placeholder, user programmable)    */
 //    0x80020EF0,   /* 20 - AFE_CFG: WAVEGEN_EN = 0, ADC_CONV_EN = 0, SUPPLY_LPF_EN = 0                     */   // comment this command out if CONTINUOUS_MEASUREMENT=1 and use the one below
     0x00000000,   /* 20_CONTINUOUS - placeholder for the 20th command (no need to change command count above) - Wait: 0 us             */
@@ -191,8 +191,8 @@ uint32_t seq_cv[] = {
                 /* sufficiently large and could be adjusted, depending on system load.                                                              */
     0x94000140, /*  8_edit: 1ms=0x94000140 - AFE_WG_DELAY_2: TRAP_DELAY_2 = 0x7F8D (placeholder, user programmable)                                 */
     0x9607D000, /*  9_edit: 1.6s - AFE_WG_SLOPE_2: TRAP_SLOPE_2 = 0x0CC1           (placeholder, user programmable)                                 */
-    0x86003267, /*  10_(4-wire) - AFE_SW_CFG: DMUX_STATE = 7 PMUX_STATE = 6 NMUX_STATE = 2 TMUX_STATE = 3                                            */
-    // 0x86006655,   /*  10_(2-wire) - DMUX_STATE = 5, PMUX_STATE = 5, NMUX_STATE = 6, TMUX_STATE = 6                    */
+    // 0x86003456, /*  10_(4-wire) - AFE_SW_CFG: DMUX_STATE = 6 PMUX_STATE = 5 NMUX_STATE = 4 TMUX_STATE = 3                                            */
+    0x86003366,   /*  10_(2-wire) - DMUX_STATE = 6, PMUX_STATE = 6, NMUX_STATE = 3, TMUX_STATE = 3                    */
     0xA0000002, /* 11 - AFE_ADC_CFG: MUX_SEL = 0b10 GAIN_OFFS_SEL = 0b00 (TIA)                                                                      */
     0x0000063E, /* 12 - Wait: 100 us                                                                                                                */
     0x80034FF0, /* 13 - AFE_CFG: WAVEGEN_EN = 1 ADC_CONV_EN = 1 SUPPLY_LPF_EN = 1                                                                   */
@@ -262,7 +262,7 @@ uint32_t seq_ac[] = {
     0x00032340,   /* 12 - Wait 13ms */
     0x80024EF0,   /* 13 - AFE_CFG: ADC_CONV_EN = 0, DFT_EN = 0 */
     /* AFE4 - AFE5 */
-    0x86004455,   /* 14 - DMUX_STATE = 4, PMUX_STATE = 4, NMUX_STATE = 5, TMUX_STATE = 5 */
+    0x86003366,   /* 14 - DMUX_STATE = 6, PMUX_STATE = 6, NMUX_STATE = 3, TMUX_STATE = 3 */
     0x00000640,   /* 15 - Wait 100us */
     0x8002CFF0,   /* 16 - AFE_CFG: ADC_CONV_EN = 1, DFT_EN = 1 */
     0x00032340,   /* 17 - Wait: (AC signal duration) (placeholder, user programmable)    */
