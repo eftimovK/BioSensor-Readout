@@ -275,7 +275,7 @@ uint32_t seq_ac[] = {
     Configurable parameters from macros (in this script)
 */
 /* The duration (in us) of the AC excitation signal */
-#define DURAC                              ((uint32_t)(1000000)) // TODO: set minimum of AC duration correctly 
+#define DURAC                              ((uint32_t)(2000000)) // TODO: set minimum of AC duration correctly 
 
 /* 
     Configurable variables from GUI
@@ -290,12 +290,8 @@ uint32_t  voltageLevelAC_DAC = ((uint32_t)((float)(0 * 40) / 1000 / DAC_LSB_SIZE
 /* FCW = FREQ * 2^26 / 16e6 */
 uint32_t signalFrequencyAC_SEQ = ((uint32_t)(((uint64_t)0 << 26) / 16000000 + 0.5));
 
-/* Start frequency of impedance spectroscopy (range: 100 Hz to 80 kHz) */
-int32_t    startFrequencyEIS = 1000;
-/* Stop frequency of impedance spectroscopy (range: startFrequencyEIS to 80 kHz) */
-int32_t    stopFrequencyEIS = 2000;
-/* Step frequency of impedance spectroscopy (range: Hz to Hz) */
-int32_t    stepFrequencyEIS = 200;
+/* Number of frequencies of impedance spectroscopy (up to MAX_NUM_EIS_FREQ) */
+int32_t    numFrequencyEIS = 1;
 
 /* 
     Sequence for turning off the wave generator, adc conversion and LPF.
@@ -327,6 +323,9 @@ uint8_t restBytes = 0;
 /* Number of samples to be transferred by DMA, based on the duration of the sequence. */
 #define SAMPLE_COUNT                (uint32_t)(8000) // ADC_SPS / DECIMATION * DURATION = max_SAMPLE_COUNT; (ADC_SPS = 160kSPS)
 
+/* Maximum number of frequencies (data points) in a EIS measurement. */
+#define MAX_NUM_EIS_FREQ            (uint32_t)(200)
+
 /* The number of results expected from the DFT (== number of complex results times two) */
 #define DFT_RESULTS_COUNT           (4)
 
@@ -340,7 +339,7 @@ uint8_t restBytes = 0;
 uint16_t        dmaBuffer[DMA_BUFFER_SIZE * 2];
 
 #pragma location="volatile_ram"     // store in RAM1
-uint16_t        adc[SAMPLE_COUNT];
+int32_t        frequenciesEIS[MAX_NUM_EIS_FREQ] = {1000};
 
 // TODO: program sequence for the testing event
 /* Amperometric measuring sequence for the creatinine samples for the testing event */
@@ -506,10 +505,10 @@ int main(void)
             /* Recalculate CRC in software for the amperometric measurement */
             adi_AFE_EnableSoftwareCRC(hAfeDevice, true);
 
-            signalFrequencyAC = startFrequencyEIS;
-
-            while (signalFrequencyAC < stopFrequencyEIS)
+            for (uint32_t i = 0; i < numFrequencyEIS; i++)
             {
+                signalFrequencyAC = frequenciesEIS[i];
+
                 /* Set sequence-specific programmable parameters */
                 seq_ac_setup(); // update frequency in the sequence
 
@@ -525,9 +524,6 @@ int main(void)
                 char                    temp[MSG_MAXLEN];
                 sprintf(temp, "%d:%d:%d:%d:%d:%d\r\n", DATA_MEAS_EIS, signalFrequencyAC, dft_results[0], dft_results[1], dft_results[2], dft_results[3] );
                 PRINT(temp);
-
-                // increment frequency
-                signalFrequencyAC += stepFrequencyEIS;  // TODO: increase logarithmically
             }
 
             /* Restore to using default CRC stored with the sequence */
@@ -583,17 +579,9 @@ int main(void)
                         rxByteSize = 4;
                         targetParameter = &voltageLevelAC;
                         break;
-                    case PARAM_START_FREQ_EIS:
+                    case PARAM_NUM_FREQ_EIS:
                         rxByteSize = 4;
-                        targetParameter = &startFrequencyEIS;
-                        break;
-                    case PARAM_STOP_FREQ_EIS:
-                        rxByteSize = 4;
-                        targetParameter = &stopFrequencyEIS;
-                        break;
-                    case PARAM_STEP_FREQ_EIS:
-                        rxByteSize = 4;
-                        targetParameter = &stepFrequencyEIS;
+                        targetParameter = &numFrequencyEIS;
                         break;
                     
                     default:    // tried to configure a parameter that is not known
@@ -634,6 +622,29 @@ int main(void)
 
                     int32_t *paramValue_ptr = (int32_t *)&paramValueRx[0];
                     *targetParameter = *paramValue_ptr;
+
+                    if (cmdRx[0] == PARAM_NUM_FREQ_EIS)
+                    {
+                        // prevent overshooting max. array index
+                        if (numFrequencyEIS > MAX_NUM_EIS_FREQ)
+                        { numFrequencyEIS = MAX_NUM_EIS_FREQ; } 
+
+                        // read numFrequencyEIS number of int32, to fill in the frequency array for EIS
+                        for (uint32_t i = 0; i < numFrequencyEIS; i++)
+                        {
+                            int8_t freqValueRx[4]; // buffer for the frequency value (set to max 4 bytes)
+                            rxByteSize = 4;
+
+                            uartRxResult = adi_UART_BufRx(hUartDevice, freqValueRx, &rxByteSize);
+                            if (ADI_UART_SUCCESS != uartRxResult)
+                            {
+                                FAIL("adi_UART_BufRx() for a frequency value failed");
+                            }
+
+                            int32_t *freqValue_ptr = (int32_t *)&freqValueRx[0];
+                            frequenciesEIS[i] = *freqValue_ptr;
+                        }
+                    }
                 }
 
                 /* send back success status */

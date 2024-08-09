@@ -24,9 +24,7 @@
 #define PARAM_VOLTAGE2_CV      102  /*!< Set voltage level 2 for CV excitation */
 #define PARAM_SLOPE_CV         103  /*!< Set slope duration  for CV excitation */
 #define PARAM_VOLTAGE_AC       104  /*!< Set voltage peak for AC excitation    */
-#define PARAM_START_FREQ_EIS   105  /*!< Set signal freq. for AC excitation    */
-#define PARAM_STOP_FREQ_EIS    106  /*!< Set stop (final) frequency for EIS    */
-#define PARAM_STEP_FREQ_EIS    107  /*!< Set step frequency for EIS            */
+#define PARAM_NUM_FREQ_EIS     107  /*!< Set number of frequencies for EIS     */
 
 /* IDs of commands sent from the microcontroller (to GUI) */
 #define DATA_MEAS_CONST         1   /*!< Measurement data is from const voltage excitation  */
