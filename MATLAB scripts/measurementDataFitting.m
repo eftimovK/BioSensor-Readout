@@ -1,7 +1,7 @@
 %% Set path of measurement files, file names, and output folder path
 
-folderPath = "C:\Users\User\Desktop\RWTH-Life\Master\AixSense\DATA team\BioSensor-Readout";
-subfolderName = "Ref Curve";
+folderPath = "C:\Users\User\Desktop\RWTH-Life\Master\AixSense\DATA team\BioSensor-Readout\Measurement\EIS\Eindhoven";
+subfolderName = "BTS";
 
 % get all .txt files names in an array
 measFiles = [];
@@ -18,7 +18,7 @@ end
 % select particular files only
 % measFiles = measFiles(1:end-1);
 
-outputFolder = 'C:\Users\User\Desktop\RWTH-Life\Master\AixSense\DATA team\BioSensor-Readout\Ref Curve\matlab';
+outputFolder = 'C:\Users\User\Desktop\RWTH-Life\Master\AixSense\DATA team\BioSensor-Readout\Measurement\EIS\Eindhoven\Ref Curve';
 
 % define frequency range to use for the impedance data
 % if multiple frequencies then the impedance point is an average
@@ -78,9 +78,6 @@ lineWidth = 3;
 markerSize = 12;
 
 figure;
-xlabel('Creatinine Concentration [uM]');
-ylabel('Impedance - real part [Ohm]');
-title('Fitting of measured data');
 
 plot(concentration, impedance, 'o', 'Color', 'k', 'MarkerFaceColor', 'k' , 'MarkerSize', markerSize, 'DisplayName', 'measurement data');
 hold on;
@@ -93,7 +90,29 @@ plot(concentration, y_log, '--o', 'LineWidth', lineWidth, 'DisplayName', 'Logari
 plot(concentration, impedance, 'o', 'Color', 'k', 'MarkerFaceColor', 'k' , 'MarkerSize', markerSize, 'DisplayName', 'measurement data');
 
 legend;
+xlabel('Creatinine Concentration [uM]');
+ylabel('Impedance - real part [Ohm]');
+title('Fitting of measured data');
 
 hold off;
 
-% Evaluate R-squared or other metrics to choose the best fit ...?
+%% Calc inverse of data fitting
+
+a = f_log.a;
+b = f_log.b;
+c = f_log.c;
+
+Z = a * log(b * concentration) + c;
+calibrationCurve = @(y) (1/b) * exp((y - c) / a);
+
+% Check whether the calibration gives expected values
+crea_known = calibrationCurve( Z )
+
+Zmeas = [135, 133.4, 138.2]; % multiple measurements of unknown impedance
+% Estimate creatinine from the unknown impedance Zmeas
+crea = calibrationCurve( mean(Zmeas) )
+
+%% Save figure
+
+
+%% Evaluate R-squared or other metrics to choose the best fit ...?
