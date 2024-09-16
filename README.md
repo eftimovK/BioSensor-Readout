@@ -12,7 +12,7 @@ During the project, an emulator board attached to the [evaluation board](https:/
 Usually the driver should be installed together with the SDK, but can be downloaded separately according to the *'Getting Started Guide'*-manual found in *'ADuCM350BBCZ - SDK\Eval-ADUCM350EBZ\doc'*
 
 If the firmware is already on the microcontroller, connect PC to the emulator board via USB and run the GUI. 
-Otherwise, beforing attempting to connect within the GUI for any measurements, open the **BiosensorScript** project within the IAR environment, then build, and download the firmware. \
+Otherwise, before attempting to connect within the GUI for any measurements, open the **BiosensorScript** project within the IAR environment, then build, and download the firmware. \
 **For this, make sure the SDK is installed.** If the files in this repository do not work, obtain the SDK installer from the [ADuCM350 website](https://www.analog.com/en/lp/001/aducm350-design-resources.html). 
 
 ## Processing measurement data
@@ -20,10 +20,10 @@ After a successfull measurement using the GUI, the data is saved in a text file.
 
     real_part	imag_part	frequency
 
-Data processing isn't currently supported within the GUI (only displaying). Thus, a MATLAB script can be used for post-analysis; see ***'readEISmeasurement.m'***.
+Data processing isn't currently supported within the GUI (only displaying). Thus, a MATLAB script was used for post-analysis; see ***'readEISmeasurement.m'***.
 
 ## Setup within the IAR environment
-The IAR project files for **BiosensorScript** should include the configuration. However, if a manual project configuration is necessary, follow the steps below. 
+The IAR project files in **BiosensorScript** should already include the configuration. However, if a manual project configuration is needed, follow the steps below. 
 Open the 'Options' window of the current project and check the following settings:
 
 - **_General Options --> Target_** to choose the ADuCM350 device
