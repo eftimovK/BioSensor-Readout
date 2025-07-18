@@ -71,12 +71,14 @@ License Agreement.
 /* DO NOT EDIT: DC Level 2 in DAC codes */
 #define DACL2                       ((uint32_t)(((float)VL2 / (float)DAC_LSB_SIZE) + 0x800))
 
-#define DECIMATION                  (uint8_t)(80)  // decimation (downsampling) factor
+#define DECIMATION                  (uint8_t)(160)  // decimation (downsampling) factor
+
+#define CONTINUOUS_MEASUREMENT      (bool_t)(1)
 
 /* DO NOT EDIT: Number of samples to be transferred by DMA, based on the duration of */
 /* the sequence.                                                                     */
 /* SAMPLE_COUNT = (Level 1 Duration + Level 2 Duration)us * (160k/178)samples/s      */
-#define SAMPLE_COUNT                (uint32_t)(8000) // ADC_SPS / DECIMATION * DURATION = max_SAMPLE_COUNT; (ADC_SPS = 160kSPS)
+#define SAMPLE_COUNT                (uint32_t)(4000) // ADC_SPS / DECIMATION * DURATION = max_SAMPLE_COUNT; (ADC_SPS = 160kSPS)
 
 /* Size limit for each DMA transfer (max 1024) */
 #define DMA_BUFFER_SIZE             (1024u)  // should be a multiple of DECIMATION! else, it gets rounded to the nearest multiple
@@ -95,7 +97,7 @@ uint16_t adc_count = 0;
 
 /* Sequence for Amperometric measurement */
 uint32_t seq_afe_ampmeas[] = {
-    0x00160065,   /*  0 - Safety Word, Command Count = 15, CRC = 0x1C                                       */
+    0x00150065,   /*  0 - Safety Word, Command Count = 15, CRC = 0x1C                                       */
     0x84003818, // DATA_FIFO_SOURCE_SEL = 0b01 (ADC); OLD CODE: 0x84007818,   /*  1 - AFE_FIFO_CFG: DATA_FIFO_SOURCE_SEL = 0b11 (LPF)                                   */
     0x8A000030,   /*  2 - AFE_WG_CFG: TYPE_SEL = 0b00                                                       */
     0x88000F00,   /*  3 - AFE_DAC_CFG: DAC_ATTEN_EN = 0 (disable DAC attenuator)                            */
@@ -116,7 +118,7 @@ uint32_t seq_afe_ampmeas[] = {
     0x86006655,   /* 18 - IVS_STATE = 0 (open IVS switch)                                                   */
     0x00000000,   /* 19 - Wait: (DAC Level 2 duration - IVS duration 2) (placeholder, user programmable)    */
     0x00000000,   /* 20 - Wait: finish DMA transfers (placeholder, programmed below)                        */
-    0x80020EF0,   /* 21 - AFE_CFG: WAVEGEN_EN = 0, ADC_CONV_EN = 0, SUPPLY_LPF_EN = 0                       */
+    // 0x80020EF0,   /* 21 - AFE_CFG: WAVEGEN_EN = 0, ADC_CONV_EN = 0, SUPPLY_LPF_EN = 0                       */
     0x82000002,   /* 22 - AFE_SEQ_CFG: SEQ_EN = 0                                                           */
 };
 
@@ -183,6 +185,12 @@ int main(void) {
     if (ADI_AFE_SUCCESS != adi_AFE_SetDecFactor(hAfeDevice, DECIMATION))
     {
         FAIL("Set decFactor");
+    }
+
+    /* Set indefinite (continuous) measurement */
+    if (ADI_AFE_SUCCESS != adi_AFE_SetIndefiniteMeasurement(hAfeDevice, CONTINUOUS_MEASUREMENT))
+    {
+        FAIL("Set indefiniteMeasurement");
     }
 
     /* AFE power up */
@@ -293,14 +301,14 @@ int main(void) {
     }
         
     // EDIT: send data to serial port after measurement
-    int16_t i;
-    char                    msg[MSG_MAXLEN];
+    // int16_t i;
+    // char                    msg[MSG_MAXLEN];
     
-    for (i=0; i < SAMPLE_COUNT; i++)
-    {
-      sprintf(msg, "%u\r\n", adc[i]);
-      PRINT(msg);
-    }
+    // for (i=0; i < SAMPLE_COUNT; i++)
+    // {
+    //   sprintf(msg, "%u\r\n", adc[i]);
+    //   PRINT(msg);
+    // }
     
     /* Uninitialize the UART */
     adi_UART_UnInit(hUartDevice);
@@ -326,6 +334,7 @@ void RxDmaCB(void *hAfeDevice, uint32_t length, void *pBuffer)
     uint16_t                *ppBuffer = (uint16_t*)pBuffer;
     uint8_t                 decCounter = 0; // counts to DECIMATION, replaces modulus
     uint32_t                adc_sum = 0;
+    char                    msg[MSG_MAXLEN];
 
     /* Check if there are samples to be sent */
     if (length)
@@ -337,7 +346,9 @@ void RxDmaCB(void *hAfeDevice, uint32_t length, void *pBuffer)
             
             if (decCounter == DECIMATION)
             {
-                adc[adc_count] = (uint16_t)(adc_sum / DECIMATION);
+                // adc[adc_count] = (uint16_t)(adc_sum / DECIMATION);
+                sprintf(msg, "%u\r\n", (uint16_t)(adc_sum / DECIMATION));
+                PRINT(msg);
                 adc_count++;            
                 adc_sum = 0;
                 decCounter = 0;
